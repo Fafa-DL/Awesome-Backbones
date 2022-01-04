@@ -10,7 +10,7 @@
 
 不定期分享AI干货，提供参与大厂讲座学知识和兼职的机会，点赞关注一起进步；
 
-ppt/pdf支持直链下载，也支持百度云盘全部下载。
+ppt/pdf支持百度云盘全部下载。
 ```
 	
 |B站主页|[啥都会一点的研究生](https://space.bilibili.com/46880349)|
@@ -24,7 +24,7 @@ ppt/pdf支持直链下载，也支持百度云盘全部下载。
 |名称|项目|
 |---|---|
 |课程主页|[温州大学机器学习](https://www.icourse163.org/course/WZU-1464096179)|
-|B站视频合集|[(强推)温州大学黄海广机器学习课程](https://www.bilibili.com/video/BV1Wv411h7kN)|
+|B站视频合集|[(强推)温州大学黄海广机器学习课程](https://www.bilibili.com/video/BV17i4y197UD)|
 |百度云资料汇总|[提取码：yr6e](https://pan.baidu.com/s/1OIDsOlvqu7BfmnAu8eU3EQ)|
 
 ****
