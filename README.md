@@ -1,162 +1,63 @@
-温州大学黄海广机器学习
+Awesome backbones for classification
 ===========================
 
 [![BILIBILI](https://github.com/Fafa-DL/Lhy_Machine_Learning/blob/main/Mine.png)](https://space.bilibili.com/46880349)
 
-****
+## 更新日志
 
-```
-群内有许多来自不同领域的人才，未来大咖云集的地方哈哈哈；
+**`2022.04.19`** : 创建仓库
 
-不定期分享AI干货，提供参与大厂讲座学知识和兼职的机会，点赞关注一起进步；
+## 测试环境
 
-ppt/pdf支持百度云盘全部下载。
-```
-	
-|B站主页|[啥都会一点的研究生](https://space.bilibili.com/46880349)|
-|---|---|
-|人工智能技术探讨群1|[78174903](https://jq.qq.com/?_wv=1027&k=lY5KVICA)|
-|人工智能技术探讨群2|[571218304](https://jq.qq.com/?_wv=1027&k=ZCDCT3xV)|
-|人工智能技术探讨群3|[584723646](https://jq.qq.com/?_wv=1027&k=bakez5Yz)|
+- Numpy       1.16.0
+- PyTorch      1.7.1
+- TorchVision 0.8.2
+- tqdm          4.62.3 
+- Pillow         8.4.0
 
-****
+## 模型
+- [x] [LeNet5](https://ieeexplore.ieee.org/document/6795724)
+- [x] [AlexNet]
+- [x] [VGG](https://arxiv.org/abs/1409.1556)
+- [x] [ResNet](https://openaccess.thecvf.com/content_cvpr_2016/html/He_Deep_Residual_Learning_CVPR_2016_paper.html)
+- [x] [ResNeXt](https://openaccess.thecvf.com/content_cvpr_2017/html/Xie_Aggregated_Residual_Transformations_CVPR_2017_paper.html)
+- [x] [SEResNet](https://openaccess.thecvf.com/content_cvpr_2018/html/Hu_Squeeze-and-Excitation_Networks_CVPR_2018_paper.html)
+- [x] [SEResNeXt](https://openaccess.thecvf.com/content_cvpr_2018/html/Hu_Squeeze-and-Excitation_Networks_CVPR_2018_paper.html)
+- [x] [RegNet](https://arxiv.org/abs/2003.13678)
+- [x] [MobileNetV2](https://arxiv.org/abs/1801.04381)
+- [x] [MobileNetV3](https://arxiv.org/abs/1905.02244)
+- [x] [ShuffleNetV1](https://openaccess.thecvf.com/content_cvpr_2018/html/Zhang_ShuffleNet_An_Extremely_CVPR_2018_paper.html)
+- [x] [ShuffleNetV2](https://openaccess.thecvf.com/content_ECCV_2018/papers/Ningning_Light-weight_CNN_Architecture_ECCV_2018_paper.pdf)
+- [x] [EfficientNet](https://arxiv.org/abs/1905.11946v5)
+- [x] [RepVGG](https://arxiv.org/abs/2101.03697)
+- [x] [Res2Net](https://arxiv.org/pdf/1904.01169.pdf)
+- [x] [ConvNeXt](https://arxiv.org/abs/2201.03545v1)
+- [x] [HRNet](https://arxiv.org/abs/1908.07919v2)
+- [x] [ConvMixer](https://arxiv.org/abs/2201.09792)
+- [x] [CSPNet](https://arxiv.org/abs/1911.11929)
+- [ ] Swin-Transformer
+- [ ] Vision-Transformer
+- [ ] Transformer-in-Transformer
+- [ ] MLP-Mixer
+- [ ] DeiT
+- [ ] Conformer
+- [ ] T2T-ViT
+- [ ] Twins
+- [ ] PoolFormer
 
-|名称|项目|
-|---|---|
-|课程主页|[温州大学机器学习](https://www.icourse163.org/course/WZU-1464096179)|
-|B站视频合集|[(强推)温州大学黄海广机器学习课程](https://www.bilibili.com/video/BV17i4y197UD)|
-|百度云资料汇总|[提取码：yr6e](https://pan.baidu.com/s/1OIDsOlvqu7BfmnAu8eU3EQ)|
 
-****
+| 名称 | 权重 | 名称 | 权重 | 名称 | 权重 |
+| :-----: | :-----: | :------: | :------: | :------: | :-----: |
+| **LeNet5** | None | **AlexNet** | None | **VGG** | [VGG-11](https://download.openmmlab.com/mmclassification/v0/vgg/vgg11_batch256_imagenet_20210208-4271cd6c.pth)<br/>[VGG-13](https://download.openmmlab.com/mmclassification/v0/vgg/vgg13_batch256_imagenet_20210208-4d1d6080.pth)<br/>[VGG-16](https://download.openmmlab.com/mmclassification/v0/vgg/vgg16_batch256_imagenet_20210208-db26f1a5.pth)<br/>[VGG-19](https://download.openmmlab.com/mmclassification/v0/vgg/vgg19_batch256_imagenet_20210208-e6920e4a.pth)<br/>[VGG-11-BN](https://download.openmmlab.com/mmclassification/v0/vgg/vgg11_bn_batch256_imagenet_20210207-f244902c.pth)<br/>[VGG-13-BN](https://download.openmmlab.com/mmclassification/v0/vgg/vgg13_bn_batch256_imagenet_20210207-1a8b7864.pth)<br/>[VGG-16-BN](https://download.openmmlab.com/mmclassification/v0/vgg/vgg16_bn_batch256_imagenet_20210208-7e55cd29.pth)<br/>[VGG-19-BN](https://download.openmmlab.com/mmclassification/v0/vgg/vgg19_bn_batch256_imagenet_20210208-da620c4f.pth)|
 
-## 课程概述
+| **ResNet** |[ResNet-18](https://download.openmmlab.com/mmclassification/v0/resnet/resnet18_8xb32_in1k_20210831-fbbb1da6.pth)<br/>[ResNet-34](https://download.openmmlab.com/mmclassification/v0/resnet/resnet34_8xb32_in1k_20210831-f257d4e6.pth)<br/>[ResNet-50](https://download.openmmlab.com/mmclassification/v0/resnet/resnet50_8xb32_in1k_20210831-ea4938fc.pth)<br/>[ResNet-101](https://download.openmmlab.com/mmclassification/v0/resnet/resnet101_8xb32_in1k_20210831-539c63f8.pth)<br/>[ResNet-152](https://download.openmmlab.com/mmclassification/v0/resnet/resnet152_8xb32_in1k_20210901-4d7582fa.pth) | **ResNetV1C** | [ResNetV1C-50](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1c50_8xb32_in1k_20220214-3343eccd.pth)<br/>[ResNetV1C-101](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1c101_8xb32_in1k_20220214-434fe45f.pth)<br/>[ResNetV1C-152](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1c152_8xb32_in1k_20220214-c013291f.pth) |**ResNetV1D** | [ResNetV1D-50](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1d50_b32x8_imagenet_20210531-db14775a.pth)<br/>[ResNetV1D-101](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1d101_b32x8_imagenet_20210531-6e13bcd3.pth)<br/>[ResNetV1D-152](https://download.openmmlab.com/mmclassification/v0/resnet/resnetv1d152_b32x8_imagenet_20210531-278cf22a.pth) |
 
-```
-机器学习是研究计算机怎样模拟或实现人类的学习行为，以获取新的知识或技能，重新组织已有的知识结构使之不断改善自身的性能。它是人工智能的核心，是使计算机具有智能的根本途径，其应用遍及人工智能的各个领域。
+| **ResNeXt** | [ResNeXt-50](https://download.openmmlab.com/mmclassification/v0/resnext/resnext50_32x4d_b32x8_imagenet_20210429-56066e27.pth)<br/>[ResNeXt-101](https://download.openmmlab.com/mmclassification/v0/resnext/resnext101_32x4d_b32x8_imagenet_20210506-e0fa3dd5.pth)<br/>[ResNeXt-152](https://download.openmmlab.com/mmclassification/v0/resnext/resnext152_32x4d_b32x8_imagenet_20210524-927787be.pth) | **SEResNet** | [SEResNet-50](https://download.openmmlab.com/mmclassification/v0/se-resnet/se-resnet50_batch256_imagenet_20200804-ae206104.pth)<br/>[SEResNet-101](https://download.openmmlab.com/mmclassification/v0/se-resnet/se-resnet101_batch256_imagenet_20200804-ba5b51d4.pth)| **SEResNeXt**| None|
 
-这门课中，我们主要讲解经典的机器学习算法，如线性回归、逻辑回归、决策树等，也将讲解近几年才出现的如XGBoost、LightGBM等集成学习算法。此外，这门课还会讲解利用机器学习解决问题的实用技术，还包括Python、Scikit-learn工具的使用等等。
+| **RegNet** |[RegNetX-400MF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-400mf_8xb128_in1k_20211213-89bfc226.pth)<br/>[RegNetX-800MF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-800mf_8xb128_in1k_20211213-222b0f11.pth)<br/>[RegNetX-1.6GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-1.6gf_8xb128_in1k_20211213-d1b89758.pth)<br/>[RegNetX-3.2GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-3.2gf_8xb64_in1k_20211213-1fdd82ae.pth)<br/>[RegNetX-4.0GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-4.0gf_8xb64_in1k_20211213-efed675c.pth)<br/>[RegNetX-6.4GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-6.4gf_8xb64_in1k_20211215-5c6089da.pth)<br/>[RegNetX-8.0GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-8.0gf_8xb64_in1k_20211213-9a9fcc76.pth)<br/>[RegNetX-12GF](https://download.openmmlab.com/mmclassification/v0/regnet/regnetx-12gf_8xb64_in1k_20211213-5df8c2f8.pth) | **MobileNetV2** | [MobileNetV2](https://download.openmmlab.com/mmclassification/v0/mobilenet_v2/mobilenet_v2_batch256_imagenet_20200708-3b2dc3af.pth) |**MobileNetV3** | [MobileNetV3-Small](https://download.openmmlab.com/mmclassification/v0/mobilenet_v3/convert/mobilenet_v3_small-8427ecf0.pth)<br/>[MobileNetV3-Large](https://download.openmmlab.com/mmclassification/v0/mobilenet_v3/convert/mobilenet_v3_large-3ea3c186.pth) |
 
-通过这门课，学习者将初步理解主流的机器学习算法，并且可以用机器学习技术解决现实生活中的问题。
+| **ShuffleNetV1** |[ShuffleNetV1](https://download.openmmlab.com/mmclassification/v0/shufflenet_v1/shufflenet_v1_batch1024_imagenet_20200804-5d6cec73.pth) | **ShuffleNetV2** | [ShuffleNetV2](https://download.openmmlab.com/mmclassification/v0/shufflenet_v2/shufflenet_v2_batch1024_imagenet_20200812-5bf4721e.pth) |**EfficientNet** | [EfficientNet-B0](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b0_3rdparty_8xb32_in1k_20220119-a7e2a0b1.pth)<br/>[EfficientNet-B1](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b1_3rdparty_8xb32_in1k_20220119-002556d9.pth)<br/>[EfficientNet-B2](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b2_3rdparty_8xb32_in1k_20220119-ea374a30.pth)<br/>[EfficientNet-B3](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b3_3rdparty_8xb32_in1k_20220119-4b4d7487.pth)<br/>[EfficientNet-B4](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b4_3rdparty_8xb32_in1k_20220119-81fd4077.pth)<br/>[EfficientNet-B5](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b5_3rdparty_8xb32_in1k_20220119-e9814430.pth)<br/>[EfficientNet-B6](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b6_3rdparty_8xb32-aa_in1k_20220119-45b03310.pth)<br/>[EfficientNet-B7](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b7_3rdparty_8xb32-aa_in1k_20220119-bf03951c.pth)<br/>[EfficientNet-B8](https://download.openmmlab.com/mmclassification/v0/efficientnet/efficientnet-b8_3rdparty_8xb32-aa-advprop_in1k_20220119-297ce1b7.pth) |
 
-与国内外很多非常优秀的机器学习课程或作品相比（如吴恩达机器学习课程、李航老师的统计学习方法、周志华老师的《机器学习》等），本课程对初学者来说，属于“雪中送炭”，而不是“锦上添花”，更适合初学者学习，主要解决初学者的三个问题：就是资料太多，难以取舍；理论性强，初学比较困难； 代码资料比较少。只要有本科三年级以上的数学知识，会一种编程语言，就可以掌握这门课程的绝大部分内容。
-```
+| **RepVGG** |[RepVGG-A0](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-A0_3rdparty_4xb64-coslr-120e_in1k_20210909-883ab98c.pth)<br/>[RepVGG-A1](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-A1_3rdparty_4xb64-coslr-120e_in1k_20210909-24003a24.pth) <br/>[RepVGG-A2](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-A2_3rdparty_4xb64-coslr-120e_in1k_20210909-97d7695a.pth)<br/>[RepVGG-B0](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B0_3rdparty_4xb64-coslr-120e_in1k_20210909-446375f4.pth)<br/>[RepVGG-B1](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B1_3rdparty_4xb64-coslr-120e_in1k_20210909-750cdf67.pth)<br/>[RepVGG-A1](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-A1_3rdparty_4xb64-coslr-120e_in1k_20210909-24003a24.pth)<br/>[RepVGG-B1g2](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B1g2_3rdparty_4xb64-coslr-120e_in1k_20210909-344f6422.pth)<br/>[RepVGG-B1g4](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B1g4_3rdparty_4xb64-coslr-120e_in1k_20210909-d4c1a642.pth)<br/>[RepVGG-B2](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B2_3rdparty_4xb64-coslr-120e_in1k_20210909-bd6b937c.pth)<br/>[RepVGG-B2g4](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B2g4_3rdparty_4xb64-autoaug-lbs-mixup-coslr-200e_in1k_20210909-7b7955f0.pth)<br/>[RepVGG-B2g4](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B2g4_3rdparty_4xb64-autoaug-lbs-mixup-coslr-200e_in1k_20210909-7b7955f0.pth)<br/>[RepVGG-B3](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B3_3rdparty_4xb64-autoaug-lbs-mixup-coslr-200e_in1k_20210909-dda968bf.pth)<br/>[RepVGG-B3g4](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B3g4_3rdparty_4xb64-autoaug-lbs-mixup-coslr-200e_in1k_20210909-4e54846a.pth)<br/>[RepVGG-D2se](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-D2se_3rdparty_4xb64-autoaug-lbs-mixup-coslr-200e_in1k_20210909-cf3139b7.pth)| **Res2Net** | [Res2Net-50-14w-8s](https://download.openmmlab.com/mmclassification/v0/res2net/res2net50-w14-s8_3rdparty_8xb32_in1k_20210927-bc967bf1.pth)<br/>[Res2Net-50-26w-8s](https://download.openmmlab.com/mmclassification/v0/res2net/res2net50-w26-s8_3rdparty_8xb32_in1k_20210927-f547a94b.pth)<br/>[Res2Net-101-26w-4s](https://download.openmmlab.com/mmclassification/v0/res2net/res2net101-w26-s4_3rdparty_8xb32_in1k_20210927-870b6c36.pth)<br/> |**ConvNeXt** | [ConvNeXt-Tiny](https://download.openmmlab.com/mmclassification/v0/convnext/convnext-tiny_3rdparty_32xb128_in1k_20220124-18abde00.pth)<br/>[ConvNeXt-Small](https://download.openmmlab.com/mmclassification/v0/convnext/convnext-small_3rdparty_32xb128_in1k_20220124-d39b5192.pth)<br/>[ConvNeXt-Base](https://download.openmmlab.com/mmclassification/v0/convnext/convnext-base_in21k-pre-3rdparty_32xb128_in1k_20220124-eb2d6ada.pth)<br/>[ConvNeXt-Large](https://download.openmmlab.com/mmclassification/v0/convnext/convnext-large_in21k-pre-3rdparty_64xb64_in1k_20220124-2412403d.pth)<br/>[ConvNeXt-XLarge](https://download.openmmlab.com/mmclassification/v0/convnext/convnext-xlarge_in21k-pre-3rdparty_64xb64_in1k_20220124-76b6863d.pth) |
 
-## 授课目标
-
-```
-1、掌握机器学习的基本问题定义、基本模型，对机器学习学科有概览性的认识。
-
-2、掌握目前主流的机器学习算法和模型，并能够根据实际问题的需要选择并实现相应的算法。
-
-3、编程完成机器学习典型应用实例，对机器学习工程编程有初步的训练
-```
-
-## 课程大纲
-
-01 引言
-    机器学习课程的引言部分
-
-    1.1 机器学习概述
-    1.2 机器学习的类型
-    1.3 机器学习的背景知识
-    1.4 机器学习的开发流程
-02回归
-    监督学习算法的回归算法
-
-    2.1 线性回归
-    2.2 梯度下降
-    2.3 正则化
-    2.4 回归的评价指标
-03 逻辑回归
-    监督学习的分类算法，本章介绍逻辑回归算法
-
-    3.1 分类问题
-    3.2 Sigmoid函数
-    3.3 逻辑回归求解
-    3.4 逻辑回归的代码实现
-04 朴素贝叶斯
-    朴素贝叶斯算法的相关知识讲解
-
-    4.1 贝叶斯方法
-    4.2 朴素贝叶斯原理
-    4.3 朴素贝叶斯案例
-    4.4 朴素贝叶斯代码实现
-05 机器学习实践
-    机器学习实践的相关知识
-
-    5.1 数据集划分
-    5.2 评价指标
-    5.3 正则化、偏差和方差
-    5.4 机器学习库Scikit-learn概述
-    5.5 机器学习库Scikit-learn的主要用法
-    5.6 机器学习库Scikit-learn的使用案例
-06 KNN算法
-    KNN算法的相关知识讲解
-
-    6.1 距离度量
-    6.2 KNN算法
-    6.3 KD树划分
-    6.4 KD树搜索
-07 决策树
-    决策树算法的相关知识讲解
-
-    7.1 决策树原理
-    7.2 ID3算法
-    7.3 C4.5算法
-    7.4 CART算法
-08 集成学习
-    集成学习的相关知识和几种典型的算法
-
-    8.1 集成学习方法概述
-    8.2 AdaBoost和GBDT算法
-    8.3 XGBoost算法
-    8.4 LightGBM算法
-    8.5 集成学习代码实现
-09 人工神经网络
-    人工神经网络概念和反向传播算法
-
-    9.1 人工神经网络概述
-    9.2 感知机算法
-    9.3 反向传播算法(BP算法)
-10 支持向量机
-    支持向量机的相关知识讲解
-
-    10.1 支持向量机概述
-    10.2 线性可分支持向量机
-    10.3 线性支持向量机
-    10.4 线性不可分支持向量机
-    10.5 支持向量机代码实现
-11 聚类
-    无监督学习算法讲解，聚类算法
-
-    11.1 无监督学习概述
-    11.2 K-means聚类
-    11.3 密度聚类和层次聚类
-    11.4 聚类的评价指标
-12 降维
-    无监督学习算法讲解，降维算法
-
-    12.1 降维概述
-    12.2 SVD(奇异值分解)
-    12.3 PCA(主成分分析)
-13 关联规则
-    无监督学习算法讲解，关联规则
-
-    13.1 关联规则概述
-    13.2 Apriori 算法
-    13.3 FP-Growth算法
-14 机器学习项目流程
-    一个完整的机器学习项目讲解
-
-    14.1 机器学习项目流程概述
-    14.2 数据清洗
-    14.3 特征工程
-    14.4 数据建模
-
-## 预备知识
-
-```
-数学基础：主要包括高等数学、线性代数、概率论与数理统计。
-
-编程基础：已经掌握一种编程工具，会使用Python进行简单地编程。
-```
+| **HRNet** |[HRNet-W18](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w18_3rdparty_8xb32_in1k_20220120-0c10b180.pth)<br/>[HRNet-W30](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w30_3rdparty_8xb32_in1k_20220120-8aa3832f.pth) <br/>[HRNet-W32](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w32_3rdparty_8xb32_in1k_20220120-c394f1ab.pth)<br/>[HRNet-W40](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w40_3rdparty_8xb32_in1k_20220120-9a2dbfc5.pth)<br/>[HRNet-W44](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w44_3rdparty_8xb32_in1k_20220120-35d07f73.pth)<br/>[HRNet-W48](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w48_3rdparty_8xb32_in1k_20220120-e555ef50.pth)<br/>[RepVGG-B1g2](https://download.openmmlab.com/mmclassification/v0/repvgg/repvgg-B1g2_3rdparty_4xb64-coslr-120e_in1k_20210909-344f6422.pth)<br/>[HRNet-W64](https://download.openmmlab.com/mmclassification/v0/hrnet/hrnet-w64_3rdparty_8xb32_in1k_20220120-19126642.pth) | **ConvMixer** | [ConvMixer-768/32](https://download.openmmlab.com/mmclassification/v0/convmixer/convmixer-768-32_3rdparty_10xb64_in1k_20220323-bca1f7b8.pth)<br/>[ConvMixer-1024/20](https://download.openmmlab.com/mmclassification/v0/convmixer/convmixer-1024-20_3rdparty_10xb64_in1k_20220323-48f8aeba.pth)<br/>[ConvMixer-1024/20](https://download.openmmlab.com/mmclassification/v0/convmixer/convmixer-1024-20_3rdparty_10xb64_in1k_20220323-48f8aeba.pth) |**CSPNet** | [CSPDarkNet50](https://download.openmmlab.com/mmclassification/v0/cspnet/cspdarknet50_3rdparty_8xb32_in1k_20220329-bd275287.pth)<br/>[CSPResNet50](https://download.openmmlab.com/mmclassification/v0/cspnet/cspresnet50_3rdparty_8xb32_in1k_20220329-dd6dddfb.pth)<br/>[CSPResNeXt50](https://download.openmmlab.com/mmclassification/v0/cspnet/cspresnext50_3rdparty_8xb32_in1k_20220329-2cc84d21.pth) |
