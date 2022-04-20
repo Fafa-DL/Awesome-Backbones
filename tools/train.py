@@ -1,7 +1,8 @@
 import os
 import sys
 sys.path.insert(0,os.getcwd())
-
+import argparse
+import importlib
 import numpy as np
 import torch
 # import torch.backends.cudnn as cudnn
@@ -12,12 +13,19 @@ import time
 import copy
 
 from utils.dataloader import Mydataset, collate
-from utils.train_utils import train,validation,print_info
+from utils.train_utils import train,validation,print_info, file2dict
 from models.build import BuildNet
 from core.optimizers import *
-from models.cspnet.cspdarknet50 import model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg
+
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train a model')
+    parser.add_argument('config', help='train config file path')
+    args = parser.parse_args()
+    return args
 
 def main(): 
+    args = parse_args()
+    model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
     dirname = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
     save_dir = os.path.join('logs',model_cfg.get('backbone').get('type'),dirname)
     os.makedirs(save_dir)
@@ -32,7 +40,7 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = BuildNet(copy.deepcopy(model_cfg)).to(device)
 
-    #print_info(model_cfg)
+    print_info(model_cfg)
     
     if not data_cfg.get('train').get('pretrained_flag'):
         print('Do not use pretrained ckpt, Now initialize the weights.')

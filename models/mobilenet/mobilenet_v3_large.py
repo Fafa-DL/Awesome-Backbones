@@ -16,9 +16,6 @@ model_cfg = dict(
             type='Normal', layer='Linear', mean=0., std=0.01, bias=0.),
         topk=(1, 5)))
 
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-
 train_pipeline = (
     dict(type='RandomResizedCrop', size=224),
     dict(type='RandomHorizontalFlip', p=0.5),

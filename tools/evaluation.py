@@ -13,13 +13,20 @@ import time
 import csv
 
 from utils.dataloader import Mydataset, collate
-from utils.train_utils import get_info,validation
+from utils.train_utils import get_info,validation, file2dict
 from models.build import BuildNet
 from core.evaluations import evaluate
 
-from models.mobilenet.mobilenet_v2_ import model_cfg,val_pipeline,data_cfg
+def parse_args():
+    parser = argparse.ArgumentParser(description='Train a model')
+    parser.add_argument('config', help='train config file path')
+    args = parser.parse_args()
+    return args
 
-def main():
+def main(): 
+    args = parse_args()
+    model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
+
     """
     创建评估文件夹、metrics文件、混淆矩阵文件
     """

@@ -22,6 +22,7 @@ def main():
 
     classes_name = [name for name in os.listdir(init_dataset)]
 
+    makedir(new_dataset)
     training_set = os.path.join(new_dataset, "train")
     test_set = os.path.join(new_dataset, "test")
     makedir(training_set)

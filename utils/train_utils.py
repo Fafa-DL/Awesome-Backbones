@@ -1,5 +1,8 @@
 import os
 import torch
+import sys
+import types
+import importlib
 from tqdm import tqdm
 from numpy import mean
 from terminaltables import AsciiTable
@@ -7,11 +10,39 @@ from configs import backbones
 from core.evaluations import evaluate
 
 '''
+读取配置文件
+'''
+def file2dict(filename):
+    (path,file) = os.path.split(filename)
+
+    abspath = os.path.abspath(os.path.expanduser(path))
+    sys.path.insert(0,abspath)
+    mod = importlib.import_module(file.split('.')[0])
+    sys.path.pop(0)
+    cfg_dict = {
+                name: value
+                for name, value in mod.__dict__.items()
+                if not name.startswith('__')
+                and not isinstance(value, types.ModuleType)
+                and not isinstance(value, types.FunctionType)
+                    }
+    return cfg_dict.get('model_cfg'),cfg_dict.get('train_pipeline'),cfg_dict.get('val_pipeline'),cfg_dict.get('data_cfg'),cfg_dict.get('lr_config'),cfg_dict.get('optimizer_cfg')
+
+'''
 输出信息
 '''
 def print_info(cfg):
     backbone = cfg.get('backbone').get('type') if cfg.get('backbone') is not None else 'None'
-    neck = cfg.get('neck').get('type') if cfg.get('neck') is not None else 'None'
+    
+    if isinstance(cfg.get('neck'),list):
+        temp = []
+        lists = cfg.get('neck')
+        for i in lists:
+            temp.append(i.get('type'))
+        neck = ' '.join(temp)
+    else:
+        neck = cfg.get('neck').get('type') if cfg.get('neck') is not None else 'None'
+        
     head = cfg.get('head').get('type') if cfg.get('head') is not None else 'None'
     loss = cfg.get('head').get('loss').get('type') if cfg.get('head').get('loss') is not None else 'None'
     
@@ -67,7 +98,7 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir):
 
             runner.get('optimizer').zero_grad()
             lr_update_func.before_train_iter(runner)
-            losses = model(images,targets=targets)
+            losses = model(images,targets=targets,return_loss=True)
             losses.get('loss').backward()
             runner.get('optimizer').step()
 

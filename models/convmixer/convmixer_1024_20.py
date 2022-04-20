@@ -65,7 +65,7 @@ optimizer_cfg = dict(
 
 # learning 
 lr_config = dict(
-    policy='CosineAnnealing',
+    type='CosineAnnealing',
     by_epoch=False,
     min_lr_ratio=1e-2,
     warmup='linear',
