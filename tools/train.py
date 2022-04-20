@@ -96,22 +96,4 @@ def main():
 
 
 if __name__ == "__main__":
-
-    # loss_history    = LossHistory(save_dir, model, input_shape=input_shape)
-    # #if Cuda:
-    #     #model_train = torch.nn.DataParallel(model)
-    #     #cudnn.benchmark = True
-    #     #model_train = model_train.cuda()
-
-    #     #-------------------------------------------------------------------#
-    #     #   判断当前batch_size，自适应调整学习率
-    #     #-------------------------------------------------------------------#
-    #     nbs             = 64
-    #     lr_limit_max    = 1e-3 if optimizer_type == 'adam' else 1e-1
-    #     lr_limit_min    = 1e-4 if optimizer_type == 'adam' else 5e-4
-
-    #     Init_lr_fit     = min(max(batch_size / nbs * Init_lr, lr_limit_min), lr_limit_max)
-    #     Min_lr_fit      = min(max(batch_size / nbs * Min_lr, lr_limit_min * 1e-2), lr_limit_max * 1e-2)
-
-    #     loss_history.writer.close()
     main()

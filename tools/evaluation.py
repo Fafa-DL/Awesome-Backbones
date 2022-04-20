@@ -123,21 +123,6 @@ def main():
     f.write(table_instance.table)
     print()
     f.close()
-    #table_instance.justify_columns[2] = 'right'
-    # for i in range(len(classes_names)):
-    #     print(classes_names[i] + ':')
-    #     print('    ' + 'Precision = ' + '{:.2f}'.format(eval_results.get('precision')[indexs[i]]))
-    #     print('    ' + 'Recall    = ' + '{:.2f}'.format(eval_results.get('recall')[indexs[i]]))
-    #     print('    ' + 'F1 Score  = ' + '{:.2f}'.format(eval_results.get('f1_score')[indexs[i]]))
-
-    #     f.write(classes_names[i] + ':' + '\n' + '    Precision = ' + '{:.2f}'.format(eval_results.get('precision')[indexs[i]]) + '\n'+ '    Recall    = ' + '{:.2f}'.format(eval_results.get('recall')[indexs[i]]) + '\n'+ '    F1 Score  = ' + '{:.2f}'.format(eval_results.get('f1_score')[indexs[i]]) + '\n')
-    # print('Top1 Accuracy  = ' + '{:.2f}'.format(eval_results.get('accuracy_top-1')))
-    # print('Top5 Accuracy  = ' + '{:.2f}'.format(eval_results.get('accuracy_top-5')))
-    # print('Mean Precision = ' + '{:.2f}'.format(mean(eval_results.get('precision'))))
-    # print('Mean Recall    = ' + '{:.2f}'.format(mean(eval_results.get('recall'))))
-    # print('Mean F1 Score  = ' + '{:.2f}'.format(mean(eval_results.get('f1_score'))))
-    # f.write('Top1 Accuracy  = ' + '{:.2f}'.format(eval_results.get('accuracy_top-1')) + '\n'+ 'Top5 Accuracy  = ' + '{:.2f}'.format(eval_results.get('accuracy_top-5')) + '\n' + 'Mean Precision = ' + '{:.2f}'.format(mean(eval_results.get('precision'))) + '\n' +'Mean Recall    = ' + '{:.2f}'.format(mean(eval_results.get('recall'))) + '\n' + 'Mean F1 Score  = ' + '{:.2f}'.format(mean(eval_results.get('f1_score'))))
-    # f.close()
     
     """
     以csv形式保存混淆矩阵
