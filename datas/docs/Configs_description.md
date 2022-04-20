@@ -11,8 +11,7 @@
 
 type与相应结构对应，其后紧接搭建该结构所需的参数，每个配置文件均已设置好；
 
-`需修改的地方`：
-    num_classes修改为对应数量，如花卉数据集为五类，则`num_classes=5`
+需修改的地方：num_classes修改为对应数量，如花卉数据集为五类，则num_classes=5
 '''
 model_cfg = dict(
     backbone=dict(type='MobileNetV3', arch='large'), 
@@ -33,11 +32,11 @@ model_cfg = dict(
 - Datasets
 ```python
 '''
-该部分对应构建训练/测试时的Datasets，使用`torchvision.transforms`进行预处理；
+该部分对应构建训练/测试时的Datasets，使用torchvision.transforms进行预处理；
 
-`size=224`为最终处理后，喂入网络的图像尺寸；
+size=224为最终处理后，喂入网络的图像尺寸；
 
-`Normalize`对应归一化，默认使用ImageNet数据集均值与方差，若你有自己数据集的参数，可以选择覆盖。
+Normalize对应归一化，默认使用ImageNet数据集均值与方差，若你有自己数据集的参数，可以选择覆盖。
 '''
 train_pipeline = (
     dict(type='RandomResizedCrop', size=224),
@@ -58,15 +57,15 @@ val_pipeline = (
 '''
 该部分对应训练/测试所需参数；
 
-`batch_size`: 根据自己设备进行调整，建议为`2`的倍数
-`num_workers`: Dataloader中加载数据的线程数，根据自己设备调整
-`pretrained_flag`: 若使用预训练权重，则设置为True
-`pretrained_weights`: 权重路径
-`freeze_flag`: 若冻结某部分训练，则设置为True
-`freeze_layers`:可选冻结的有backbone, neck, head
-`epoches`: 最大迭代周期
+batch_size                 : 根据自己设备进行调整，建议为`2`的倍数
+num_workers            : Dataloader中加载数据的线程数，根据自己设备调整
+pretrained_flag          : 若使用预训练权重，则设置为True
+pretrained_weights    : 权重路径
+freeze_flag                : 若冻结某部分训练，则设置为True
+freeze_layers             :可选冻结的有backbone, neck, head
+epoches                    : 最大迭代周期
 
-`ckpt`:评估模型所需的权重文件
+ckpt : 评估模型所需的权重文件
 `其余参数均不用改动`
 '''
 data_cfg = dict(
@@ -92,15 +91,16 @@ data_cfg = dict(
 - Optimizer
 ```python
 '''
-训练时的优化器，与`torch.optim`对应
+训练时的优化器，与torch.optim对应
 
-`type`: 'RMSprop'对应torch.optim.RMSprop，可在torch.optim查看
+type : 'RMSprop'对应torch.optim.RMSprop，可在torch.optim查看
 PyTorch支持Adadelta、Adagrad、Adam、AdamW、SparseAdam、Adamax、ASGD、SGD、Rprop、RMSprop、Optimizer、LBFGS
 可以根据自己需求选择优化器
-`lr`:初始学习率，可根据自己Batch Size调整
 
-`ckpt`:评估模型所需的权重文件
-`其余参数均不用改动`
+lr      : 初始学习率，可根据自己Batch Size调整
+ckpt : 评估模型所需的权重文件
+
+其余参数均不用改动
 '''
 optimizer_cfg = dict(
     type='RMSprop',
@@ -113,16 +113,16 @@ optimizer_cfg = dict(
 - Learning Rate
 ```python
 '''
-学习率更新策略，各方法可在`Awesome-Backbones/core/optimizers/lr_update.py`查看
+学习率更新策略，各方法可在Awesome-Backbones/core/optimizers/lr_update.py查看
 
-'StepLrUpdater':线性递减
-'CosineAnnealingLrUpdater':余弦退火
+StepLrUpdater                    : 线性递减
+CosineAnnealingLrUpdater : 余弦退火
 
-`by_epoch`:是否每个Epoch更新学习率
-`warmup`:在正式使用学习率更新策略前先用warmup小学习率训练，可选'constant', 'linear', 'exp'
-`warmup_ratio`:与`Optimizer`中的`lr`结合所选warmup方式进行学习率运算更新
-`warmup_by_epoch`:作用与`by_epoch`类似，若为False，则为每一步（Batch）进行更新，否则每周期
-`warmup_iters`:warmup作用时长，`warmup_by_epoch`为True则代表周期，False则代表步数
+by_epoch                : 是否每个Epoch更新学习率
+warmup                  : 在正式使用学习率更新策略前先用warmup小学习率训练，可选constant, linear, exp
+warmup_ratio          : 与`Optimizer`中的`lr`结合所选warmup方式进行学习率运算更新
+warmup_by_epoch  : 作用与`by_epoch`类似，若为False，则为每一步（Batch）进行更新，否则每周期
+warmup_iters          : warmup作用时长，warmup_by_epoch为True则代表周期，False则代表步数
 '''
 lr_config = dict(
     type='CosineAnnealingLrUpdater',
