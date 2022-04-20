@@ -6,14 +6,14 @@
 - 每个模型均对应有各自的配置文件，保存在`Awesome-Backbones/models`下
 - Model
 ```python
-```
+'''
 由backbone、neck、head、head.loss构成一个完整模型；
 
 type与相应结构对应，其后紧接搭建该结构所需的参数，每个配置文件均已设置好；
 
 `需修改的地方`：
     num_classes修改为对应数量，如花卉数据集为五类，则`num_classes=5`
-```
+'''
 model_cfg = dict(
     backbone=dict(type='MobileNetV3', arch='large'), 
     neck=dict(type='GlobalAveragePooling'),
@@ -32,13 +32,13 @@ model_cfg = dict(
 ```
 - Datasets
 ```python
-```
+'''
 该部分对应构建训练/测试时的Datasets，使用`torchvision.transforms`进行预处理；
 
 `size=224`为最终处理后，喂入网络的图像尺寸；
 
 `Normalize`对应归一化，默认使用ImageNet数据集均值与方差，若你有自己数据集的参数，可以选择覆盖。
-```
+'''
 train_pipeline = (
     dict(type='RandomResizedCrop', size=224),
     dict(type='RandomHorizontalFlip', p=0.5),
@@ -55,7 +55,7 @@ val_pipeline = (
 ```
 - Train/Test
 ```python
-```
+'''
 该部分对应训练/测试所需参数；
 
 `batch_size`: 根据自己设备进行调整，建议为`2`的倍数
@@ -68,7 +68,7 @@ val_pipeline = (
 
 `ckpt`:评估模型所需的权重文件
 `其余参数均不用改动`
-```
+'''
 data_cfg = dict(
     batch_size = 32,
     num_workers = 4,
@@ -91,7 +91,7 @@ data_cfg = dict(
 ```
 - Optimizer
 ```python
-```
+'''
 训练时的优化器，与`torch.optim`对应
 
 `type`: 'RMSprop'对应torch.optim.RMSprop，可在torch.optim查看
@@ -101,7 +101,7 @@ PyTorch支持Adadelta、Adagrad、Adam、AdamW、SparseAdam、Adamax、ASGD、SG
 
 `ckpt`:评估模型所需的权重文件
 `其余参数均不用改动`
-```
+'''
 optimizer_cfg = dict(
     type='RMSprop',
     lr=0.001,
@@ -112,7 +112,7 @@ optimizer_cfg = dict(
 ```
 - Learning Rate
 ```python
-```
+'''
 学习率更新策略，各方法可在`Awesome-Backbones/core/optimizers/lr_update.py`查看
 
 'StepLrUpdater':线性递减
@@ -123,7 +123,7 @@ optimizer_cfg = dict(
 `warmup_ratio`:与`Optimizer`中的`lr`结合所选warmup方式进行学习率运算更新
 `warmup_by_epoch`:作用与`by_epoch`类似，若为False，则为每一步（Batch）进行更新，否则每周期
 `warmup_iters`:warmup作用时长，`warmup_by_epoch`为True则代表周期，False则代表步数
-```
+'''
 lr_config = dict(
     type='CosineAnnealingLrUpdater',
     by_epoch=False,
