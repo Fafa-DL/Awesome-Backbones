@@ -62,7 +62,7 @@ num_workers            : Dataloader中加载数据的线程数，根据自己设
 pretrained_flag          : 若使用预训练权重，则设置为True
 pretrained_weights    : 权重路径
 freeze_flag                : 若冻结某部分训练，则设置为True
-freeze_layers             :可选冻结的有backbone, neck, head
+freeze_layers              :可选冻结的有backbone, neck, head
 epoches                    : 最大迭代周期
 
 ckpt : 评估模型所需的权重文件
