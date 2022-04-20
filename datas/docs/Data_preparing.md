@@ -6,7 +6,9 @@
 ## 1. 标签文件制作
 
 - 本次演示以花卉数据集为例，目录结构如下：
+
 '''
+
 ├─flower_photos
 │  ├─daisy
 │  │      100080576_f52e8ee070_n.jpg
@@ -28,6 +30,7 @@
 │          100930342_92e8746431_n.jpg
 │          10094729603_eeca3f2cb6.jpg
 │  │      ...
+
 '''
 - 在`Awesome-Backbones/datas/`中创建标签文件`annotations.txt`，按行将`类别名 索引`写入文件；
 ```
@@ -72,4 +75,4 @@ python tools/split_data.py
 ```
 python tools/get_annotation.py
 ```
-- 在`Awesome-Backbones/datas`下得到生成的数据集信息文件`train.txt`与'test.txt'
+- 在`Awesome-Backbones/datas`下得到生成的数据集信息文件`train.txt`与`test.txt`
