@@ -16,10 +16,10 @@ Awesome backbones for classification
 - Pillow         8.4.0
 
 ## 教程
-- 数据集准备(https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/Data_preparing.md)
-- 配置文件解释(https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/Configs_description.md)
-- 训练(https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/How_to_train.md)
-- 模型评估(https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/How_to_eval.md)
+- [数据集准备](https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/Data_preparing.md)
+- [配置文件解释](https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/Configs_description.md)
+- [训练](https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/How_to_train.md)
+- [模型评估](https://raw.githubusercontent.com/Fafa-DL/Awesome-Backbones/datas/How_to_eval.md)
 
 ## 模型
 - [x] [LeNet5](https://ieeexplore.ieee.org/document/6795724)
