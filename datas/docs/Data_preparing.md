@@ -7,7 +7,7 @@
 
 - 本次演示以花卉数据集为例，目录结构如下：
 
-'''
+```
 
 ├─flower_photos
 │  ├─daisy
@@ -31,7 +31,7 @@
 │          10094729603_eeca3f2cb6.jpg
 │  │      ...
 
-'''
+```
 - 在`Awesome-Backbones/datas/`中创建标签文件`annotations.txt`，按行将`类别名 索引`写入文件；
 ```
 daisy 0
