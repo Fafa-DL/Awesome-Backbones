@@ -5,7 +5,7 @@ model_cfg = dict(
     neck=dict(type='GlobalAveragePooling'),
     head=dict(
         type='StackedLinearClsHead',
-        num_classes=5,
+        num_classes=1000,
         in_channels=576,
         mid_channels=[1024],
         dropout_rate=0.2,
@@ -36,7 +36,7 @@ data_cfg = dict(
     batch_size = 32,
     num_workers = 4,
     train = dict(
-        pretrained_flag = True,
+        pretrained_flag = False,
         pretrained_weights = 'datas/mobilenet_v3_small.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),
