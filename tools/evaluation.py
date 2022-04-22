@@ -1,6 +1,7 @@
 import os
 import sys
 sys.path.insert(0,os.getcwd())
+import argparse
 import numpy as np
 from numpy import mean
 from tqdm import tqdm
@@ -39,7 +40,7 @@ def main():
     """
     获取类别名以及对应索引、获取标注文件
     """
-    classes_map = 'datas/cls_classes.txt' 
+    classes_map = 'datas/annotations.txt' 
     test_annotations    = 'datas/test.txt'
     classes_names, indexs = get_info(classes_map)
     with open(test_annotations, encoding='utf-8') as f:

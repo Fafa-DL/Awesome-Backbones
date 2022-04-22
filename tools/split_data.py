@@ -17,7 +17,7 @@ def main():
     
     split_rate = 0.2
     init_dataset = ''
-    new_dataset = ''
+    new_dataset = 'datasets'
     random.seed(0)
 
     classes_name = [name for name in os.listdir(init_dataset)]

@@ -5,7 +5,7 @@ model_cfg = dict(
     neck=dict(type='GlobalAveragePooling'),
     head=dict(
         type='StackedLinearClsHead',
-        num_classes=1000,
+        num_classes=5,
         in_channels=576,
         mid_channels=[1024],
         dropout_rate=0.2,
@@ -33,17 +33,17 @@ val_pipeline = (
 
 # train
 data_cfg = dict(
-    batch_size = 32,
-    num_workers = 4,
+    batch_size = 1,
+    num_workers = 2,
     train = dict(
-        pretrained_flag = False,
-        pretrained_weights = 'datas/mobilenet_v3_small.pth',
+        pretrained_flag = True,
+        pretrained_weights = 'datas/mobilenet_v3_small-8427ecf0.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),
         epoches = 100,
     ),
     test=dict(
-        ckpt = 'logs/20220202091725/Val_Epoch019-Loss0.215.pth',
+        ckpt = 'logs/MobileNetV3/2022-04-10-09-17-25/Train_Epoch098-Loss0.035.pth',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),
