@@ -28,7 +28,6 @@ class Mydataset(Dataset):
 
 
     def preprocess(self, image,cfg):
-        # 确认是RGB彩色图像
         if not (len(np.shape(image)) == 3 and np.shape(image)[2] == 3):
             image = image.convert('RGB')
         funcs = []
