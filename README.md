@@ -41,15 +41,15 @@ Awesome backbones for classification
 - [x] [HRNet](https://arxiv.org/abs/1908.07919v2)
 - [x] [ConvMixer](https://arxiv.org/abs/2201.09792)
 - [x] [CSPNet](https://arxiv.org/abs/1911.11929)
-- [ ] Swin-Transformer
-- [ ] Vision-Transformer
-- [ ] Transformer-in-Transformer
-- [ ] MLP-Mixer
-- [ ] DeiT
-- [ ] Conformer
-- [ ] T2T-ViT
-- [ ] Twins
-- [ ] PoolFormer
+- [ ] [Swin-Transformer](https://arxiv.org/pdf/2103.14030.pdf)
+- [ ] [Vision-Transformer](https://arxiv.org/pdf/2010.11929.pdf)
+- [ ] [Transformer-in-Transformer](https://arxiv.org/pdf/2103.00112.pdf)
+- [ ] [MLP-Mixer](https://arxiv.org/pdf/2105.01601.pdf)
+- [ ] [DeiT](https://arxiv.org/pdf/2012.12877.pdf)
+- [ ] [Conformer](https://arxiv.org/pdf/2105.03889.pdf)
+- [ ] [T2T-ViT](https://arxiv.org/pdf/2101.11986.pdf)
+- [ ] [Twins](http://arxiv-export-lb.library.cornell.edu/pdf/2104.13840)
+- [ ] [PoolFormer](https://arxiv.org/pdf/2111.11418.pdf)
 
 ## 预训练权重
 

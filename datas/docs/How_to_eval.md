@@ -9,7 +9,7 @@
 - 按照`配置文件解释`修改参数，主要修改权重路径
 - 在`Awesome-Backbones`打开终端运行
 ```
-python tools/evaluation.py 'models/mobilenet/mobilenet_v3_small.py'
+python tools/evaluation.py models/mobilenet/mobilenet_v3_small.py
 ```
 
 
