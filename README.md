@@ -15,6 +15,12 @@ Awesome backbones for classification
 - tqdm          4.62.3 
 - Pillow         8.4.0
 
+## 资料
+|数据集|视频教程|人工智能技术探讨群|
+|---|---|---|
+|[`花卉数据集` 提取码：0zat](https://pan.baidu.com/s/1137y4l-J3AgyCiC_cXqIqw)|[点我跳转](https://www.bilibili.com/video/BV1SY411P7Nd)|[1群：78174903](https://jq.qq.com/?_wv=1027&k=lY5KVICA)<br/>[2群：571218304](https://jq.qq.com/?_wv=1027&k=ZCDCT3xV)<br/>[3群：584723646](https://jq.qq.com/?_wv=1027&k=bakez5Yz)
+
+
 ## 教程
 - [数据集准备](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Data_preparing.md)
 - [配置文件解释](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Configs_description.md)

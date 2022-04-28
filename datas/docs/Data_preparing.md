@@ -40,7 +40,7 @@ tulips 4
 ```
 ## 2. 数据集划分
 - 打开`Awesome-Backbones/tools/split_data.py`
-- 修改`原始数据集路径`以及`划分后的保存路径`，如：
+- 修改`原始数据集路径`以及`划分后的保存路径`，强烈建议划分后的保存路径`datasets`不要改动，在下一步都是默认基于文件夹进行操作
 ```
 init_dataset = 'A:/flower_photos'
 new_dataset = 'A:/Awesome-Backbones/datasets'
@@ -68,7 +68,10 @@ python tools/split_data.py
 ├─...
 ```
 ## 3. 数据集信息文件制作
-- 确保划分后的数据集是在`Awesome-Backbones/datasets`下；
+- 确保划分后的数据集是在`Awesome-Backbones/datasets`下，若不在则在`get_annotation.py`下修改数据集路径；
+```
+datasets_path   = '你的数据集路径'
+```
 - 在`Awesome-Backbones/`下打开终端输入命令：
 ```
 python tools/get_annotation.py
