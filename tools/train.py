@@ -42,9 +42,9 @@ def main():
 
     print_info(model_cfg)
     
-    if not data_cfg.get('train').get('pretrained_flag'):
-        print('Do not use pretrained ckpt, Now initialize the weights.')
-        model.init_weights()
+    #if not data_cfg.get('train').get('pretrained_flag'):
+    print('Initialize the weights.')
+    model.init_weights()
         
     if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
         print('Loading {}'.format(os.path.basename(data_cfg.get('train').get('pretrained_weights'))))
@@ -52,9 +52,8 @@ def main():
         pretrained_dict = torch.load(data_cfg.get('train').get('pretrained_weights'), map_location=device)
         if 'state_dict' in pretrained_dict:
             pretrained_dict = pretrained_dict['state_dict']       
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if np.shape(model_dict[k]) ==  np.shape(v)}
-        model_dict.update(pretrained_dict)
-        model.load_state_dict(model_dict)
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v) and 'backbone' in k}
+        print(model.load_state_dict(pretrained_dict,strict=False))
         
     if data_cfg.get('train').get('freeze_flag') and data_cfg.get('train').get('freeze_layers'):
         freeze_layers = ' '.join(list(data_cfg.get('train').get('freeze_layers')))
