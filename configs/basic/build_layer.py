@@ -7,6 +7,8 @@ from .activations import *
 from .convolution import *
 from .normalization import *
 from .padding import *
+from .drop import *
+from .wrappers import *
 
 CONV_LAYERS = ['Conv1d','Conv2d','Conv3d','Conv','Conv2dAdaptivePadding']
 NORM_LAYERS = ['BN','BN1d','BN2d','BN3d','SyncBN','GN','LN','IN','IN1d','IN2d','IN3d','LN2d']
@@ -187,3 +189,7 @@ def build_padding_layer(cfg, *args, **kwargs):
     layer = padding_layer(*args, **kwargs, **cfg_)
 
     return layer
+
+
+def build_dropout(cfg):
+    return eval(cfg.pop('type'))(**cfg)

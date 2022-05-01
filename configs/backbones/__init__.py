@@ -18,6 +18,7 @@ from .convnext import ConvNeXt
 from .hrnet import HRNet
 from .convmixer import ConvMixer
 from .cspnet import CSPDarkNet,CSPResNet,CSPResNeXt
+from .swin_transformer import SwinTransformer
 
 
-__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt']
+__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer']

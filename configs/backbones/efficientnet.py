@@ -8,7 +8,8 @@ import torch.nn as nn
 import torch.utils.checkpoint as cp
 from torch.nn.modules.batchnorm import _BatchNorm
 
-from ..common import InvertedResidual, SELayer, ConvModule, BaseModule, Sequential,DropPath, make_divisible
+from ..common import InvertedResidual, SELayer, ConvModule, BaseModule, Sequential, make_divisible
+from ..basic.drop import DropPath
 
 
 

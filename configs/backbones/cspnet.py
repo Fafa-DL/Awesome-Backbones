@@ -4,7 +4,8 @@ from typing import Sequence
 
 import torch
 import torch.nn as nn
-from ..common import ConvModule, DropPath, BaseModule, Sequential, DepthwiseSeparableConvModule
+from ..common import ConvModule, BaseModule, Sequential, DepthwiseSeparableConvModule
+from ..basic.drop import DropPath
 from torch.nn.modules.batchnorm import _BatchNorm
 
 from ..common import to_ntuple

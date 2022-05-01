@@ -41,7 +41,7 @@ data_cfg = dict(
         epoches = 100,
     ),
     test=dict(
-        ckpt = 'logs/20220202091725/Val_Epoch019-Loss0.215.pth',
+        ckpt = 'logs/ResNet/2022-01-19-15-20-05/Val_Epoch048-Acc85.511.pth',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),
@@ -51,10 +51,12 @@ data_cfg = dict(
     )
 )
 
+# batch 32
+# lr = 0.1 *32 /256
 # optimizer
 optimizer_cfg = dict(
     type='SGD',
-    lr=0.001,
+    lr=0.1 * 32/256,
     momentum=0.9,
     weight_decay=1e-4)
 

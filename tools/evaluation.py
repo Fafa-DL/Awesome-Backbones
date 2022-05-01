@@ -54,7 +54,7 @@ def main():
     print('Loading {}'.format(data_cfg.get('test').get('ckpt').split('/')[-1]))
     model_dict = model.state_dict()
     pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
-    pretrained_dict = {k: v for k, v in pretrained_dict.items() if np.shape(model_dict[k]) ==  np.shape(v)}
+    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)}
     model_dict.update(pretrained_dict)
     model.load_state_dict(model_dict)
     

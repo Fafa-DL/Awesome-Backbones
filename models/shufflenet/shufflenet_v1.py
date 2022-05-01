@@ -47,10 +47,12 @@ data_cfg = dict(
     )
 )
 
+# batch 32
+# lr = 0.5 * 32 / 1024
 # optimizer
 optimizer_cfg = dict(
     type='SGD',
-    lr=0.001,
+    lr=0.5 * 32 / 1024,
     momentum=0.9,
     weight_decay=0.00004)
 

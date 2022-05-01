@@ -17,7 +17,6 @@ def file2dict(filename):
 
     abspath = os.path.abspath(os.path.expanduser(path))
     sys.path.insert(0,abspath)
-    print(sys.path)
     mod = importlib.import_module(file.split('.')[0])
     sys.path.pop(0)
     cfg_dict = {

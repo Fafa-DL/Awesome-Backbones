@@ -55,7 +55,7 @@ data_cfg = dict(
 # optimizer
 optimizer_cfg = dict(
     type='RMSprop',
-    lr=0.001,
+    lr=0.064,
     alpha=0.9,
     momentum=0.9,
     eps=0.0316,

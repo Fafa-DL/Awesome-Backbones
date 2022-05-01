@@ -4,7 +4,7 @@ import torch.utils.checkpoint as cp
 
 from .conv_module import ConvModule
 from .se_layer import SELayer
-from .drop_path import DropPath
+from ..basic.drop import DropPath
 from .base_module import BaseModule
 
 class InvertedResidual(BaseModule):

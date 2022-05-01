@@ -45,8 +45,14 @@ data_cfg = dict(
     )
 )
 
+# batch 32
+# lr = 0.1 *32 /256
 # optimizer
-optimizer_cfg = dict(type='SGD', lr=0.001, momentum=0.9, weight_decay=0.0001)
+optimizer_cfg = dict(
+    type='SGD',
+    lr=0.1 * 32/256,
+    momentum=0.9,
+    weight_decay=1e-4)
 
 # learning policy
 lr_config = dict(type='StepLrUpdater', step=[30, 60, 90])

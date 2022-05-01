@@ -33,10 +33,10 @@ val_pipeline = (
 
 # train
 data_cfg = dict(
-    batch_size = 1,
-    num_workers = 2,
+    batch_size = 32,
+    num_workers = 4,
     train = dict(
-        pretrained_flag = True,
+        pretrained_flag = False,
         pretrained_weights = 'datas/mobilenet_v3_small-8427ecf0.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),

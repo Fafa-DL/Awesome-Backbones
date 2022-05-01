@@ -4,7 +4,7 @@ import warnings
 from itertools import repeat
 
 import torch
-#from utils.version_utils import digit_version
+from utils.version_utils import digit_version
 
 
 def is_tracing() -> bool:

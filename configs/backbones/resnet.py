@@ -5,7 +5,7 @@ import torch.utils.checkpoint as cp
 from ..basic.build_layer import (build_activation_layer, build_conv_layer,
                       build_norm_layer)
 from core.initialize.weight_init import constant_init
-from ..common.drop_path import DropPath
+from ..basic.drop import DropPath
 from ..common.conv_module import ConvModule
 from ..common.base_module import BaseModule
 from torch.nn.modules.batchnorm import _BatchNorm

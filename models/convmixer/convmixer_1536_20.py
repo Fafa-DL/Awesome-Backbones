@@ -46,22 +46,15 @@ data_cfg = dict(
     )
 )
 
-paramwise_cfg = dict(
-    norm_decay_mult=0.0,
-    bias_decay_mult=0.0,
-    custom_keys={
-        '.absolute_pos_embed': dict(decay_mult=0.0),
-        '.relative_position_bias_table': dict(decay_mult=0.0)
-    })
-
+# batch 32
+# lr = 0.01 *32 /64
 # optimizer
 optimizer_cfg = dict(
     type='AdamW',
-    lr=0.001,
+    lr=0.01 * 32 / 64,
     weight_decay=0.05,
     eps=1e-8,
-    betas=(0.9, 0.999),
-    paramwise_cfg=paramwise_cfg)
+    betas=(0.9, 0.999),)
 
 # learning 
 lr_config = dict(

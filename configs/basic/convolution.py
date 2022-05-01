@@ -10,11 +10,11 @@ def Conv1d(*args, **kwargs):
 def Conv2d(*args, **kwargs):
     return nn.Conv2d(*args, **kwargs)
 
-def Conv3d(*args, **kwargs):
-    return nn.Conv3d(*args, **kwargs)
+# def Conv3d(*args, **kwargs):
+#     return nn.Conv3d(*args, **kwargs)
 
-def Conv(*args, **kwargs):
-    return nn.Conv2d(*args, **kwargs)
+# def Conv(*args, **kwargs):
+#     return nn.Conv2d(*args, **kwargs)
 
 class Conv2dAdaptivePadding(nn.Conv2d):
     """Implementation of 2D convolution in tensorflow with `padding` as "same",

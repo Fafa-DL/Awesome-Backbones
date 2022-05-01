@@ -58,10 +58,12 @@ data_cfg = dict(
     )
 )
 
+# batch 32
+# lr = 4e-3 *32 /64
 # optimizer
 optimizer_cfg = dict(
     type='AdamW',
-    lr=0.001,
+    lr=4e-3 * 32 / 64,
     weight_decay=0.05,
     eps=1e-8,
     betas=(0.9, 0.999),)
