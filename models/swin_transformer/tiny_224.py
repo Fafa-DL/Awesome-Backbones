@@ -33,9 +33,9 @@ val_pipeline = (
 # train
 data_cfg = dict(
     batch_size = 32,
-    num_workers = 4,
+    num_workers = 8,
     train = dict(
-        pretrained_flag = True,
+        pretrained_flag = False,
         pretrained_weights = 'datas/swin_tiny_224_b16x64_300e_imagenet.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),

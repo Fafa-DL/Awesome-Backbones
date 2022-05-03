@@ -16,13 +16,14 @@ model_cfg = dict(
 
 # dataloader pipeline
 train_pipeline = (
-    dict(type='RandomResizedCrop', size=(384,384)),
+    dict(type='RandomResizedCrop', size=384),
     dict(type='RandomHorizontalFlip', p=0.5),
     dict(type='ToTensor'),
     dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 )
 val_pipeline = (
-    dict(type='Resize', size=(384,384)),
+    dict(type='Resize', size=384),
+    dict(type='CenterCrop', size=384),
     dict(type='ToTensor'),
     dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 )
