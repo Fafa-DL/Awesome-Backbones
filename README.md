@@ -50,7 +50,7 @@ Awesome backbones for classification
 - [x] [ConvMixer](https://arxiv.org/abs/2201.09792)
 - [x] [CSPNet](https://arxiv.org/abs/1911.11929)
 - [x] [Swin-Transformer](https://arxiv.org/pdf/2103.14030.pdf)
-- [ ] [Vision-Transformer](https://arxiv.org/pdf/2010.11929.pdf)
+- [x] [Vision-Transformer](https://arxiv.org/pdf/2010.11929.pdf)
 - [ ] [Transformer-in-Transformer](https://arxiv.org/pdf/2103.00112.pdf)
 - [ ] [MLP-Mixer](https://arxiv.org/pdf/2105.01601.pdf)
 - [ ] [DeiT](https://arxiv.org/pdf/2012.12877.pdf)
