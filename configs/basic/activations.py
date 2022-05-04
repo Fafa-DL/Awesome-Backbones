@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 import torch.nn.functional as F
-
+#   nn.ReLU, nn.LeakyReLU, nn.PReLU, nn.RReLU, nn.ReLU6, nn.ELU, nn.Sigmoid, nn.Tanh
 def ReLU(inplace=True):
     return nn.ReLU(inplace=inplace)
 
@@ -13,6 +13,9 @@ def Sigmoid():
 
 def LeakyReLU(inplace=True):
     return nn.LeakyReLU(inplace=inplace)
+
+def Tanh():
+    return nn.Tanh()
 
 class HSigmoid(nn.Module):
     def __init__(self, bias=3.0, divisor=6.0, min_value=0.0, max_value=1.0):
