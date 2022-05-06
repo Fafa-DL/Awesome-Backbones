@@ -20,6 +20,13 @@ from .convmixer import ConvMixer
 from .cspnet import CSPDarkNet,CSPResNet,CSPResNeXt
 from .swin_transformer import SwinTransformer
 from .vision_transformer import VisionTransformer
+from .tnt import TNT
+from .mlp_mixer import MlpMixer
+from .deit import DistilledVisionTransformer
+from .conformer import Conformer
+from .t2t_vit import T2T_ViT
+from .twins import PCPVT, SVT
+from .poolformer import PoolFormer
 
 
-__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer']
+__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer', 'TNT', 'MlpMixer', 'DistilledVisionTransformer', 'Conformer', 'T2T_ViT', 'PCPVT', 'SVT', 'PoolFormer']
