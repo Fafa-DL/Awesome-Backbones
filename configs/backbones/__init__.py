@@ -27,6 +27,8 @@ from .conformer import Conformer
 from .t2t_vit import T2T_ViT
 from .twins import PCPVT, SVT
 from .poolformer import PoolFormer
+from .van import VAN
+from .densenet import DenseNet
 
 
-__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer', 'TNT', 'MlpMixer', 'DistilledVisionTransformer', 'Conformer', 'T2T_ViT', 'PCPVT', 'SVT', 'PoolFormer']
+__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer', 'TNT', 'MlpMixer', 'DistilledVisionTransformer', 'Conformer', 'T2T_ViT', 'PCPVT', 'SVT', 'PoolFormer', 'VAN', 'DenseNet']
