@@ -25,6 +25,7 @@ Awesome backbones for classification
 - [配置文件解释](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Configs_description.md)
 - [训练](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
 - [模型评估](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_eval.md)
+- [添加新的模型组件](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Add_modules.md)
 
 ## 模型
 - [x] [LeNet5](https://ieeexplore.ieee.org/document/6795724)
