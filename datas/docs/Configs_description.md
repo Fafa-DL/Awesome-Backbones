@@ -13,7 +13,9 @@ type与相应结构对应，其后紧接搭建该结构所需的参数，每个�
 
 配置文件中的 ‘type’ 不是构造时的参数，而是类名。
 
-需修改的地方：num_classes修改为对应数量，如花卉数据集为五类，则num_classes=5
+需修改的地方：num_classes修改为对应数量，如花卉数据集为五类，则`num_classes=5`
+
+注意如果`类别数小于5`则`topk=(1, 5)`的`5`改成小于类别数，若只需要top1，可以设置为`topk=(1, )`
 '''
 model_cfg = dict(
     backbone=dict(
