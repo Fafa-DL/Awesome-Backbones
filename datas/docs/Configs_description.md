@@ -15,7 +15,7 @@ type与相应结构对应，其后紧接搭建该结构所需的参数，每个�
 
 需修改的地方：num_classes修改为对应数量，如花卉数据集为五类，则`num_classes=5`
 
-注意如果`类别数小于5`则`topk=(1, 5)`的`5`改成小于类别数，若只需要top1，可以设置为`topk=(1, )`
+注意如果`类别数小于5`则`topk=(1, 5)`设置为`topk=(1, )`，此时top5准确率为100%
 '''
 model_cfg = dict(
     backbone=dict(
@@ -71,6 +71,7 @@ freeze_layers              :可选冻结的有backbone, neck, head
 epoches                    : 最大迭代周期
 
 ckpt : 评估模型所需的权重文件
+注意如果`类别数小于5`则`topk=(1, 5)`设置为`topk=(1, )`，此时top5准确率为100%
 `其余参数均不用改动`
 '''
 data_cfg = dict(

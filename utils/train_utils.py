@@ -84,7 +84,7 @@ def get_lr(optimizer):
 '''
 训练
 '''
-def train(model, runner, lr_update_func, device, epoch, epoches, save_dir):
+def train(model, runner, lr_update_func, device, epoch, epoches, save_dir, train_history):
     train_loss = 0
     
     model.train()
@@ -107,6 +107,8 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir):
                                 'Lr' : get_lr(runner.get('optimizer'))
                                 })
             pbar.update(1)
+    
+    train_history.update(train_loss / (iter + 1),'train')
             
     if train_loss/len(runner.get('train_loader')) < runner.get('best_train_loss') :
         runner['best_train_loss'] = train_loss/len(runner.get('train_loader'))
@@ -121,7 +123,7 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir):
     torch.save(model.state_dict(),runner.get('last_weight'))
     
 
-def validation(model, runner, cfg, device, epoch, epoches, save_dir):
+def validation(model, runner, cfg, device, epoch, epoches, save_dir, train_history):
 
     preds,targets = [],[]
     model.eval()
@@ -136,10 +138,13 @@ def validation(model, runner, cfg, device, epoch, epoches, save_dir):
                 pbar.update(1)
                 
     eval_results = evaluate(torch.cat(preds),torch.cat(targets),cfg.get('metrics'),cfg.get('metric_options'))
+    
+    train_history.update(eval_results,'test')
+    
     TITLE = 'Validation Results'
     TABLE_DATA = (
     ('Top-1 Acc', 'Top-5 Acc', 'Mean Precision', 'Mean Recall', 'Mean F1 Score'),
-    ('{:.2f}'.format(eval_results.get('accuracy_top-1',0.0)), '{:.2f}'.format(eval_results.get('accuracy_top-5',0.0)), '{:.2f}'.format(mean(eval_results.get('precision',0.0))),'{:.2f}'.format(mean(eval_results.get('recall',0.0))),'{:.2f}'.format(mean(eval_results.get('f1_score',0.0)))),
+    ('{:.2f}'.format(eval_results.get('accuracy_top-1',0.0)), '{:.2f}'.format(eval_results.get('accuracy_top-5',100.0)), '{:.2f}'.format(mean(eval_results.get('precision',0.0))),'{:.2f}'.format(mean(eval_results.get('recall',0.0))),'{:.2f}'.format(mean(eval_results.get('f1_score',0.0)))),
     
 )
     table_instance = AsciiTable(TABLE_DATA,TITLE)

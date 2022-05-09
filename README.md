@@ -9,6 +9,8 @@ Awesome backbones for classification
 
 **`2022.05.07`** : 更新VAN、DenseNet
 
+**`2022.05.09`** : 训练保存各Epoch评价指标供大家使用，提供Train Loss与Val Acc曲线图
+
 ## 测试环境
 
 - PyTorch      1.7.1

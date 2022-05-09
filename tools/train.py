@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 import time
 import copy
 
+from utils.history import History
 from utils.dataloader import Mydataset, collate
 from utils.train_utils import train,validation,print_info, file2dict
 from models.build import BuildNet
@@ -31,6 +32,8 @@ def main():
     os.makedirs(save_dir)
     train_annotations   = "datas/train.txt"
     test_annotations    = 'datas/test.txt'
+    
+    train_history =History(save_dir)
     
     with open(train_annotations, encoding='utf-8') as f:
         train_datas = f.readlines()
@@ -90,8 +93,10 @@ def main():
     for epoch in range(data_cfg.get('train').get('epoches')):
         runner['epoch'] = epoch
         lr_update_func.before_train_epoch(runner)
-        train(model,runner, lr_update_func, device, epoch, data_cfg.get('train').get('epoches'), save_dir)
-        validation(model,runner, data_cfg.get('test'), device, epoch, data_cfg.get('train').get('epoches'), save_dir)
+        train(model,runner, lr_update_func, device, epoch, data_cfg.get('train').get('epoches'), save_dir,train_history)
+        validation(model,runner, data_cfg.get('test'), device, epoch, data_cfg.get('train').get('epoches'), save_dir,train_history)
+        
+        train_history.after_epoch(epoch+1)
 
 
 if __name__ == "__main__":
