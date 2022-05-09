@@ -84,7 +84,7 @@ def main():
     """
     输出并保存Accuracy、Precision、Recall、F1 Score、Confusion matrix结果
     """
-    p_r_f1 = [['Clasee','Precision','Recall','F1 Score']]
+    p_r_f1 = [['Classes','Precision','Recall','F1 Score']]
     for i in range(len(classes_names)):
         data = []
         data.append(classes_names[i])
