@@ -5,11 +5,11 @@ Awesome backbones for classification
 
 ## 更新日志
 
-**`2022.05.06`** : 更新Vision Transformer、Transformer-in-Transformer、MLP Mixer、DeiT、Conformer、T2T-ViT、Twins、PoolFormer
-
 **`2022.05.07`** : 更新VAN、DenseNet
 
 **`2022.05.09`** : 训练保存各Epoch评价指标供大家使用，提供Train Loss与Val Acc曲线图
+
+**`2022.05.10`** : 模型评估时具体每一张图像的预测结果以CSV文件保存，方便各位调试
 
 ## 测试环境
 

@@ -91,7 +91,7 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir, train
     with tqdm(total=len(runner.get('train_loader')),desc=f'Train: Epoch {epoch + 1}/{epoches}',postfix=dict,mininterval=0.3) as pbar:
         for iter, batch in enumerate(runner.get('train_loader')):
             runner['iter'] += 1
-            images, targets = batch
+            images, targets, _ = batch
             with torch.no_grad():
                 images  = images.to(device)
                 targets = targets.to(device)
@@ -130,7 +130,7 @@ def validation(model, runner, cfg, device, epoch, epoches, save_dir, train_histo
     with torch.no_grad():
         with tqdm(total=len(runner.get('val_loader')), desc=f'Test : Epoch {epoch + 1}/{epoches}',mininterval=0.3) as pbar:
             for iter, batch in enumerate(runner.get('val_loader')):
-                images, target = batch
+                images, target, _ = batch
                 #runner.get('optimizer').zero_grad()
                 outputs = model(images.to(device),return_loss=False)
                 preds.append(outputs)

@@ -24,7 +24,7 @@ class Mydataset(Dataset):
         image = self.preprocess(image,cfg)
         gt = int(self.gt_labels[index].split(' ')[1])
         
-        return image, gt
+        return image, gt, image_path
 
 
     def preprocess(self, image,cfg):
@@ -38,8 +38,8 @@ class Mydataset(Dataset):
         return image
 
 def collate(batches):
-    images, gts = tuple(zip(*batches))
+    images, gts, image_path = tuple(zip(*batches))
     images = torch.stack(images, dim=0)
     gts = torch.as_tensor(gts)
     
-    return images, gts
+    return images, gts, image_path
