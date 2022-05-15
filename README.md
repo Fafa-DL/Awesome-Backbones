@@ -5,11 +5,11 @@ Awesome backbones for classification
 
 ## 更新日志
 
-**`2022.05.07`** : 更新VAN、DenseNet
-
 **`2022.05.09`** : 训练保存各Epoch评价指标供大家使用，提供Train Loss与Val Acc曲线图
 
 **`2022.05.10`** : 模型评估时具体每一张图像的预测结果以CSV文件保存，方便各位调试
+
+**`2022.05.15`** : 更新[类别激活图可视化]((https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/CAM_visualization.md))，训练配置文件保存
 
 ## 测试环境
 
@@ -28,6 +28,7 @@ Awesome backbones for classification
 - [训练](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
 - [模型评估](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_eval.md)
 - [添加新的模型组件](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Add_modules.md)
+- [类别激活图可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/CAM_visualization.md)
 
 ## 模型
 - [x] [LeNet5](https://ieeexplore.ieee.org/document/6795724)
