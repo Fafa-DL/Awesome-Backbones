@@ -17,7 +17,7 @@
 | EigenGradCAM  | 类似 EigenCAM，但支持类别区分，使用了激活 \* 梯度的第一主成分，看起来和 GradCAM 差不多，但是更干净 |
 | LayerCAM  | 使用正梯度对激活进行空间加权，对于浅层有更好的效果 |
 
-[CAM02](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam02.png)
+![CAM02](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam02.png)
 
 **命令行**：
 
@@ -88,4 +88,4 @@ python tools/vis_cam.py datasets/test/dandelion/14283011_3e7452c5b2_n.jpg models
 python tools/vis_cam.py datasets/test/dandelion/14283011_3e7452c5b2_n.jpg models/t2t_vit/t2t_vit_t_14.py --vit-like --target-layers backbone.encoder[-1].ln1
 ```
 
-[CAM01](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam01.png)
+![CAM01](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam01.png)
