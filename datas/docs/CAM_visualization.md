@@ -88,4 +88,4 @@ python tools/vis_cam.py datasets/test/dandelion/14283011_3e7452c5b2_n.jpg models
 python tools/vis_cam.py datasets/test/dandelion/14283011_3e7452c5b2_n.jpg models/t2t_vit/t2t_vit_t_14.py --vit-like --target-layers backbone.encoder[-1].ln1
 ```
 
-![CAM01](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam01.png)
+![CAM01](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/cam01.jpg)
