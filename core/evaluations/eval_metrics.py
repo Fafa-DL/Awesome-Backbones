@@ -214,9 +214,7 @@ def evaluate(
     
     # 判断数据集类别是否小于5，若小于5则top5为100%，但为避免索引报错，将topk最大值取类别数
     if max(topk) > len(results[0]):
-        temp = len(results[0])
-        print(temp)
-        topk = (1,temp)
+        topk = (1,)
     
     thrs = metric_options.get('thrs')         # 不存在为None
     average_mode = metric_options.get('average_mode', 'macro')
