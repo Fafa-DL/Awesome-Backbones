@@ -40,7 +40,7 @@ python tools/visualizations/vis_cam.py \
 **所有参数的说明**：
 
 - `img`：目标图片路径。
-- `config`：模型配置文件的路径。
+- `config`：模型配置文件的路径。需注意修改配置文件中`data_cfg->test->ckpt`的权重路径，将使用该权重进行预测
 - `--target-layers`：所查看的网络层名称，可输入一个或者多个网络层, 如果不设置，将使用最后一个`block`中的`norm`层。
 - `--preview-model`：是否查看模型所有网络层。
 - `--method`：类别激活图图可视化的方法，目前支持 `GradCAM`, `GradCAM++`, `XGradCAM`, `EigenCAM`, `EigenGradCAM`, `LayerCAM`，不区分大小写。如果不设置，默认为 `GradCAM`。
