@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.insert(0,os.getcwd())
 import argparse
-import importlib
+import shutil
 import numpy as np
 import torch
 # import torch.backends.cudnn as cudnn
@@ -15,6 +15,7 @@ import copy
 from utils.history import History
 from utils.dataloader import Mydataset, collate
 from utils.train_utils import train,validation,print_info, file2dict
+from utils.inference import init_model
 from models.build import BuildNet
 from core.optimizers import *
 
@@ -34,6 +35,7 @@ def main():
     test_annotations    = 'datas/test.txt'
     
     train_history =History(save_dir)
+    shutil.copyfile(args.config,os.path.join(save_dir,os.path.split(args.config)[1]))
     
     with open(train_annotations, encoding='utf-8') as f:
         train_datas = f.readlines()
@@ -41,22 +43,11 @@ def main():
         val_datas   = f.readlines()
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BuildNet(copy.deepcopy(model_cfg)).to(device)
 
     print_info(model_cfg)
-    
-    #if not data_cfg.get('train').get('pretrained_flag'):
-    print('Initialize the weights.')
-    model.init_weights()
         
     if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
-        print('Loading {}'.format(os.path.basename(data_cfg.get('train').get('pretrained_weights'))))
-        model_dict = model.state_dict()
-        pretrained_dict = torch.load(data_cfg.get('train').get('pretrained_weights'), map_location=device)
-        if 'state_dict' in pretrained_dict:
-            pretrained_dict = pretrained_dict['state_dict']       
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v) and 'backbone' in k}
-        print(model.load_state_dict(pretrained_dict,strict=False))
+        model = init_model(model_cfg, data_cfg, device=device, mode='train')
         
     if data_cfg.get('train').get('freeze_flag') and data_cfg.get('train').get('freeze_layers'):
         freeze_layers = ' '.join(list(data_cfg.get('train').get('freeze_layers')))

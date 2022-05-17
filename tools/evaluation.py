@@ -1,6 +1,6 @@
+import imp
 import os
 import sys
-from unittest import result
 sys.path.insert(0,os.getcwd())
 import argparse
 import numpy as np
@@ -15,9 +15,10 @@ import time
 import csv
 
 from utils.dataloader import Mydataset, collate
-from utils.train_utils import get_info,validation, file2dict
+from utils.train_utils import get_info, file2dict
 from models.build import BuildNet
 from core.evaluations import evaluate
+from utils.inference import init_model
 
 def get_metrics_output(eval_results, metrics_output,classes_names, indexs):
     f = open(metrics_output,'a', newline='')
@@ -120,13 +121,7 @@ def main():
     生成模型、加载权重
     """
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BuildNet(model_cfg).to(device)
-    print('Loading {}'.format(data_cfg.get('test').get('ckpt').split('/')[-1]))
-    model_dict = model.state_dict()
-    pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
-    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)}
-    model_dict.update(pretrained_dict)
-    model.load_state_dict(model_dict)
+    model = init_model(model_cfg, data_cfg, device=device, mode='eval')
     
     """
     制作测试集并喂入Dataloader
@@ -137,7 +132,6 @@ def main():
     """
     计算Precision、Recall、F1 Score、Confusion matrix
     """
-    model.eval()
     with torch.no_grad():
         preds,targets, image_paths = [],[],[]
         with tqdm(total=len(test_datas)//data_cfg.get('batch_size')) as pbar:

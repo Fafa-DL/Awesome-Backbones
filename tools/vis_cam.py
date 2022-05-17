@@ -17,7 +17,7 @@ import numpy as np
 from utils.version_utils import digit_version
 from utils.train_utils import  file2dict
 from utils.misc import to_2tuple
-from models.build import BuildNet
+from utils.inference import init_model
 from torch.nn import BatchNorm1d, BatchNorm2d, GroupNorm, LayerNorm
 
 
@@ -307,15 +307,7 @@ def main():
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
 
     device = args.device #torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BuildNet(copy.deepcopy(model_cfg)).to(device)
-    
-    print('Loading {}'.format(os.path.basename(data_cfg.get('test').get('ckpt'))))
-    model_dict = model.state_dict()
-    pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
-    if 'state_dict' in pretrained_dict:
-        pretrained_dict = pretrained_dict['state_dict']       
-    pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)}
-    print(model.load_state_dict(pretrained_dict,strict=False))
+    model = init_model(model_cfg, data_cfg, device=device, mode='eval')
     
     if args.preview_model:
         print(model)
