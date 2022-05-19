@@ -46,8 +46,7 @@ def main():
 
     print_info(model_cfg)
         
-    if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
-        model = init_model(model_cfg, data_cfg, device=device, mode='train')
+    model = init_model(model_cfg, data_cfg, device=device, mode='train')
         
     if data_cfg.get('train').get('freeze_flag') and data_cfg.get('train').get('freeze_layers'):
         freeze_layers = ' '.join(list(data_cfg.get('train').get('freeze_layers')))
