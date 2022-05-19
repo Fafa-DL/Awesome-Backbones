@@ -23,18 +23,29 @@ def init_model(model_cfg, data_cfg, device='cuda:0',mode='eval'):
         print('Initialize the weights.')
         model.init_weights()
         
-    if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
+        if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
+            print('Loading {}'.format(data_cfg.get('test').get('ckpt').split('/')[-1]))
+            model_dict = model.state_dict()
+            pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
+            if 'state_dict' in pretrained_dict:
+                pretrained_dict = pretrained_dict['state_dict']  
+            pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v) and 'backbone' in k}
+            model_dict.update(pretrained_dict)
+            print(model.load_state_dict(pretrained_dict,strict=False))
+            
+    elif mode =='eval':
         print('Loading {}'.format(data_cfg.get('test').get('ckpt').split('/')[-1]))
         model_dict = model.state_dict()
         pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
         
         if 'state_dict' in pretrained_dict:
             pretrained_dict = pretrained_dict['state_dict']  
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)} if mode == 'eval' else {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v) and 'backbone' in k}
-        
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)}
         model_dict.update(pretrained_dict)
         print(model.load_state_dict(pretrained_dict,strict=False))
+        
     model.to(device)
+    
     if mode == 'eval':
         model.eval()
     
