@@ -95,9 +95,9 @@ class LrUpdater(object):
         ]
     # 获取新lr并在optimizer中更新
     def before_train_epoch(self, runner):
-        if self.warmup_iters is None: # 即self.warmup_by_epoch为True
+        if self.warmup_iters is None: # 即self.warmup_by_epoch为True，warmup_epochs = warmup_iters
             epoch_len = len(runner.get("train_loader"))
-            self.warmup_iters = self.warmup_epochs * epoch_len
+            self.warmup_iters = self.warmup_epochs * epoch_len # 按周期更新则warmup iters = warmup_epochs * datasets//batch size
         # 不按周期更新则没必要在此进行lr更新，在下一步before_train_iter中更新
         if not self.by_epoch:
             return
@@ -118,10 +118,10 @@ class LrUpdater(object):
             # 按周期更新lr，由于当前迭代已经大于warmup迭代，所以直接返回，使用before_train_epoch中的lr
             if self.warmup is None or cur_iter > self.warmup_iters:
                 return
-            elif cur_iter == self.warmup_iters:
+            elif cur_iter == self.warmup_iters: # 等于则用常规方式
                 self._set_lr(runner, self.regular_lr)
             else:
-                warmup_lr = self.get_warmup_lr(cur_iter)
+                warmup_lr = self.get_warmup_lr(cur_iter) # 小于则用warmup方式
                 self._set_lr(runner, warmup_lr)
 
 class StepLrUpdater(LrUpdater):
