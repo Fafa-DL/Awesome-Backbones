@@ -89,8 +89,7 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir, train
     
     model.train()
     with tqdm(total=len(runner.get('train_loader')),desc=f'Train: Epoch {epoch + 1}/{epoches}',postfix=dict,mininterval=0.3) as pbar:
-        for iter, batch in enumerate(runner.get('train_loader')):
-            runner['iter'] += 1
+        for iter, batch in enumerate(runner.get('train_loader')):            
             images, targets, _ = batch
             with torch.no_grad():
                 images  = images.to(device)
@@ -106,6 +105,7 @@ def train(model, runner, lr_update_func, device, epoch, epoches, save_dir, train
             pbar.set_postfix(**{'Loss': train_loss / (iter + 1), 
                                 'Lr' : get_lr(runner.get('optimizer'))
                                 })
+            runner['iter'] += 1
             pbar.update(1)
     
     train_history.update(train_loss / (iter + 1),'train')
