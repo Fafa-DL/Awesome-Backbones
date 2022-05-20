@@ -127,7 +127,7 @@ def main():
     制作测试集并喂入Dataloader
     """
     test_dataset = Mydataset(test_datas, val_pipeline)
-    test_loader = DataLoader(test_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True,drop_last=True, collate_fn=collate)
+    test_loader = DataLoader(test_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True, collate_fn=collate)
     
     """
     计算Precision、Recall、F1 Score、Confusion matrix
