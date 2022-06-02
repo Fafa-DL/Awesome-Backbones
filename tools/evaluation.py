@@ -11,6 +11,7 @@ from terminaltables import AsciiTable
 import torch
 # import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
+from torch.nn.parallel import DataParallel
 import time
 import csv
 
@@ -92,6 +93,13 @@ def get_prediction_output(preds,targets,image_paths,classes_names,indexs,predict
 def parse_args():
     parser = argparse.ArgumentParser(description='Evaluate a model')
     parser.add_argument('config', help='train config file path')
+    parser.add_argument('--device', help='device used for training. (Deprecated)')
+    parser.add_argument(
+        '--gpu-id',
+        type=int,
+        default=0,
+        help='id of gpu to use '
+        '(only applicable to non-distributed training)')
     args = parser.parse_args()
     return args
 
@@ -120,8 +128,15 @@ def main():
     """
     生成模型、加载权重
     """
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = init_model(model_cfg, data_cfg, device=device, mode='eval')
+    if args.device is not None:
+        device = torch.device(args.device)
+    else:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    model = BuildNet(model_cfg)
+    if device != torch.device('cpu'):
+        model = DataParallel(model,device_ids=[args.gpu_id])
+    model = init_model(model, data_cfg, device=device, mode='eval')
     
     """
     制作测试集并喂入Dataloader

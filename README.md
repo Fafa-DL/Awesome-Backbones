@@ -5,11 +5,11 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.05.10`** : 模型评估时具体每一张图像的预测结果以CSV文件保存，方便各位调试
-
 **`2022.05.15`** : 更新[类别激活图可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/CAM_visualization.md)，训练配置文件保存
 
 **`2022.05.19`** : 更新[学习率策略可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Lr_visualization.md)，更新**Wide-ResNet**
+
+**`2022.06.02`** : 代码优化；支持从**中断处恢复训练**
 
 ## 测试环境
 

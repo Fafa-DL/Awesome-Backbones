@@ -22,7 +22,7 @@
 **命令行**：
 
 ```bash
-python tools/visualizations/vis_cam.py \
+python tools/vis_cam.py \
     ${IMG} \
     ${CONFIG_FILE} \
     [--target-layers ${TARGET-LAYERS}] \

@@ -11,5 +11,23 @@
 ```
 python tools/train.py models/mobilenet/mobilenet_v3_small.py
 ```
+**命令行**：
 
+```bash
+python tools/train.py \
+    ${CONFIG_FILE} \
+    [--resume-from] \
+    [--seed] \
+    [--device] \
+    [--gpu-id] \
+    [--deterministic] \
+```
 
+**所有参数的说明**：
+
+- `config`：模型配置文件的路径。
+- `--resume-from`：从中断处恢复训练，提供权重路径，`务必注意正确的恢复方式是从Last_Epoch***.pth`，如--resume-from logs/SwinTransformer/2022-02-08-08-27-41/Last_Epoch15.pth
+- `--seed`：设置随机数种子，默认按照环境设置
+- `--device`：设置GPU或CPU训练
+- `--gpu-id`：指定GPU设备，默认为0（单卡基本均为0不用改动）
+- `--deterministic`：多GPU训练相关，暂不用设置

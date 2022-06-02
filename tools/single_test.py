@@ -3,9 +3,11 @@ from argparse import ArgumentParser
 import os
 import sys
 sys.path.insert(0,os.getcwd())
+import torch
 
 from utils.inference import inference_model, init_model, show_result_pyplot
 from utils.train_utils import get_info, file2dict
+from models.build import BuildNet
 
 def main():
     parser = ArgumentParser()
@@ -22,7 +24,14 @@ def main():
     classes_names, _ = get_info(classes_map)
     # build the model from a config file and a checkpoint file
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
-    model = init_model(model_cfg, data_cfg, device=args.device, mode='eval')
+    if args.device is not None:
+        device = torch.device(args.device)
+    else:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    model = BuildNet(model_cfg)
+    model = init_model(model, data_cfg, device=device, mode='eval')
+    
     # test a single image
     result = inference_model(model, args.img, val_pipeline, classes_names)
     # show the results

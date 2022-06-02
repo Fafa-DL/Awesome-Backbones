@@ -7,47 +7,28 @@ from PIL import Image
 from core.visualization import imshow_infos
 from models.build import BuildNet
 from torchvision import transforms
+from utils.checkpoint import load_checkpoint
 
 
-def init_model(model_cfg, data_cfg, device='cuda:0',mode='eval'):
+def init_model(model, data_cfg, device='cuda:0',mode='eval'):
     """Initialize a classifier from config file.
 
     Returns:
         nn.Module: The constructed classifier.
     """
-    if device == '':
-        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BuildNet(model_cfg)
     
     if mode == 'train':
-        print('Initialize the weights.')
-        model.init_weights()
-        
         if data_cfg.get('train').get('pretrained_flag') and data_cfg.get('train').get('pretrained_weights'):
             print('Loading {}'.format(data_cfg.get('train').get('pretrained_weights').split('/')[-1]))
-            model_dict = model.state_dict()
-            pretrained_dict = torch.load(data_cfg.get('train').get('pretrained_weights'), map_location=device)
-            if 'state_dict' in pretrained_dict:
-                pretrained_dict = pretrained_dict['state_dict']  
-            pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v) and 'backbone' in k}
-            model_dict.update(pretrained_dict)
-            print(model.load_state_dict(pretrained_dict,strict=False))
+            load_checkpoint(model,data_cfg.get('train').get('pretrained_weights'),device,False)
+            
             
     elif mode =='eval':
         print('Loading {}'.format(data_cfg.get('test').get('ckpt').split('/')[-1]))
-        model_dict = model.state_dict()
-        pretrained_dict = torch.load(data_cfg.get('test').get('ckpt'), map_location=device)
-        
-        if 'state_dict' in pretrained_dict:
-            pretrained_dict = pretrained_dict['state_dict']  
-        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in model_dict.keys() and np.shape(model_dict[k]) ==  np.shape(v)}
-        model_dict.update(pretrained_dict)
-        print(model.load_state_dict(pretrained_dict,strict=False))
+        model.eval()
+        load_checkpoint(model,data_cfg.get('test').get('ckpt'),device,False)
         
     model.to(device)
-    
-    if mode == 'eval':
-        model.eval()
     
     return model
 

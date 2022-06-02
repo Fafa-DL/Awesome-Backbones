@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import os
 import sys
 sys.path.insert(0,os.getcwd())
@@ -11,9 +10,10 @@ from pathlib import Path
 import torch
 from PIL import Image
 from torchvision import transforms
-
 import cv2
 import numpy as np
+
+from models.build import BuildNet
 from utils.version_utils import digit_version
 from utils.train_utils import  file2dict
 from utils.misc import to_2tuple
@@ -306,8 +306,13 @@ def main():
     args = parse_args()
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
 
-    device = args.device #torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = init_model(model_cfg, data_cfg, device=device, mode='eval')
+    if args.device is not None:
+        device = torch.device(args.device)
+    else:
+        device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    
+    model = BuildNet(model_cfg)
+    model = init_model(model, data_cfg, device=device, mode='eval')
     
     if args.preview_model:
         print(model)
@@ -326,7 +331,7 @@ def main():
         target_layers = get_default_traget_layers(model, args)
 
     # init a cam grad calculator
-    use_cuda = ('cuda' in device)
+    use_cuda = ('cuda' in args.device)
     reshape_transform = build_reshape_transform(model, args)
     cam = init_cam(args.method, model, target_layers, use_cuda,
                    reshape_transform)

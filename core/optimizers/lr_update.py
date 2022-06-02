@@ -48,7 +48,8 @@ class LrUpdater(object):
 
         self.base_lr = []  # initial lr for all param groups
         self.regular_lr = []  # expected lr if no warming up is performed
-    # 给optimizer传新lr
+        
+    # 给optimizer设置新lr
     def _set_lr(self, runner, lr_groups):
 
         for param_group, lr in zip(runner.get("optimizer").param_groups,
@@ -57,11 +58,13 @@ class LrUpdater(object):
 
     def get_lr(self, runner, base_lr):
         raise NotImplementedError
+    
     # 获取新lr
     def get_regular_lr(self, runner):
 
         return [self.get_lr(runner, _base_lr) for _base_lr in self.base_lr]
 
+    # 获取warmup学习率更新策略的lr
     def get_warmup_lr(self, cur_iters):
 
         def _get_warmup_lr(cur_iters, regular_lr):
@@ -83,6 +86,7 @@ class LrUpdater(object):
             return lr_groups
         else:
             return _get_warmup_lr(cur_iters, self.regular_lr)
+        
     # 记录初始lr
     def before_run(self, runner):
         # NOTE: when resuming from a checkpoint, if 'initial_lr' is not saved,
@@ -93,10 +97,11 @@ class LrUpdater(object):
         self.base_lr = [
             group['initial_lr'] for group in runner.get("optimizer").param_groups
         ]
-    # 获取新lr并在optimizer中更新
+        
+    # 在周期更新前获取新lr并在optimizer中更新它
     def before_train_epoch(self, runner):
         if self.warmup_iters is None: # 即self.warmup_by_epoch为True，warmup_epochs = warmup_iters
-            epoch_len = len(runner.get("train_loader"))
+            epoch_len = len(runner.get("train_loader")) # 获取一个epoch迭代多少iter，即datasets//batch size
             self.warmup_iters = self.warmup_epochs * epoch_len # 按周期更新则warmup iters = warmup_epochs * datasets//batch size
         # 不按周期更新则没必要在此进行lr更新，在下一步before_train_iter中更新
         if not self.by_epoch:
@@ -104,7 +109,8 @@ class LrUpdater(object):
 
         self.regular_lr = self.get_regular_lr(runner)
         self._set_lr(runner, self.regular_lr)
-    # 首先判断是否按周期更新lr，大于等于warmup_iters使用正常lr更新方式，小于则用warmup方式更新lr
+        
+     # 首先判断是否按周期更新lr，若按迭代次数更新即by_epoch为False，大于等于warmup_iters使用正常lr更新方式，小于则用warmup方式更新lr
     def before_train_iter(self, runner):
         cur_iter = runner.get("iter")
         if not self.by_epoch:
