@@ -8,9 +8,9 @@ Awesome backbones for image classification
 ![](https://img.shields.io/badge/Awesome%20Backbones-v0.5.8-brightgreen)
 ![](https://img.shields.io/badge/PyTorch-%3E%3Dv1.7.1-green)
 ![](https://img.shields.io/badge/Python-%3E%3Dv3.6-yellowgreen)
-![GitHub forks](https://img.shields.io/github/forks/Fafa-DL/Awesome-Backbones)
-![GitHub stars](https://img.shields.io/github/stars/Fafa-DL/Awesome-Backbones)
-![Visitors](https://visitor-badge.glitch.me/badge?page_id=Fafa-DL/Awesome-Backbones&right_color=yellow)
+[![GitHub forks](https://img.shields.io/github/forks/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
+[![GitHub stars](https://img.shields.io/github/stars/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
+![Visitors](https://visitor-badge.glitch.me/badge?page_id=Fafa-DL.Awesome-Backbones&right_color=yellow)
 
 </div>
 
