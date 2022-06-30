@@ -24,8 +24,8 @@ Awesome backbones for image classification
 
 ## 测试环境
 
-- PyTorch      1.7.1
-- TorchVision 0.8.2
+- Pytorch      1.7.1
+- Python       3.6
 
 ## 资料
 |数据集|视频教程|人工智能技术探讨群|
@@ -34,6 +34,7 @@ Awesome backbones for image classification
 
 
 ## 教程
+- [环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)
 - [数据集准备](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Data_preparing.md)
 - [配置文件解释](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Configs_description.md)
 - [训练](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
