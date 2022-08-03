@@ -10,16 +10,23 @@ model_cfg = dict(
     ))
 
 # dataloader pipeline
-train_pipeline = (
-    dict(type='Resize', size=32),
-    dict(type='ToTensor'),
-    dict(type='Normalize', mean=[0.131], std=[0.309])
-)
-val_pipeline = (
-    dict(type='Resize', size=32),
-    dict(type='ToTensor'),
-    dict(type='Normalize', mean=[0.131], std=[0.309])
-)
+img_norm_cfg = dict(
+    mean=[33.405], std=[78.795], to_rgb=False)
+train_pipeline = [
+    dict(type='LoadImageFromFile', color_type='grayscale'),
+    dict(type='Resize', size=32, backend='pillow'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='ToTensor', keys=['gt_label']),
+    dict(type='Collect', keys=['img', 'gt_label'])
+]
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='Resize', size=32, backend='pillow'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='Collect', keys=['img'])
+]
 
 # train
 data_cfg = dict(

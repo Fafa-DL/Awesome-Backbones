@@ -1,14 +1,27 @@
 # model settings
 model_cfg = dict(
-    backbone=dict(type='RegNet', arch='regnetx_12gf'),
-    neck=dict(type='GlobalAveragePooling'),
+    backbone=dict(
+        type='MlpMixer',
+        arch='b',
+        img_size=224,
+        patch_size=16,
+        drop_rate=0.1,
+        init_cfg=[
+            dict(
+                type='Kaiming',
+                layer='Conv2d',
+                mode='fan_in',
+                nonlinearity='linear')
+        ]),
+    neck=dict(type='GlobalAveragePooling', dim=1),
     head=dict(
         type='LinearClsHead',
-        num_classes=1000,
-        in_channels=2240,
+        num_classes=5,
+        in_channels=768,
         loss=dict(type='CrossEntropyLoss', loss_weight=1.0),
         topk=(1, 5),
-    ))
+    ),
+)
 
 # dataloader pipeline
 img_norm_cfg = dict(
@@ -53,19 +66,23 @@ data_cfg = dict(
     )
 )
 
+# batch 32
+# lr = 5e-4 * 32 / 64
 # optimizer
 optimizer_cfg = dict(
-    type='SGD',
-    lr=0.001,
-    momentum=0.9,
-    weight_decay=5e-5)
+    type='AdamW',
+    lr=5e-4 * 32 / 64,
+    weight_decay=0.05,
+    eps=1e-8,
+    betas=(0.9, 0.999),)
 
 # learning 
 lr_config = dict(
     type='CosineAnnealingLrUpdater',
-    min_lr=0,
+    by_epoch=False,
+    min_lr_ratio=1e-2,
     warmup='linear',
-    warmup_iters=5,
-    warmup_ratio=0.1,
+    warmup_ratio=1e-3,
+    warmup_iters=3,
     warmup_by_epoch=True
 )

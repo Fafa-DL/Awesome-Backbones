@@ -15,32 +15,38 @@ model_cfg = dict(
         topk=(1, 5)))
 
 # dataloader pipeline
-train_pipeline = (
-    dict(type='RandomResizedCrop', size=384),
-    dict(type='RandomHorizontalFlip', p=0.5),
-    dict(type='ToTensor'),
-    dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-)
-val_pipeline = (
-    dict(type='Resize', size=384),
-    dict(type='CenterCrop', size=384),
-    dict(type='ToTensor'),
-    dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-)
+img_norm_cfg = dict(
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='RandomResizedCrop', size=384, backend='pillow'),
+    dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='ToTensor', keys=['gt_label']),
+    dict(type='Collect', keys=['img', 'gt_label'])
+]
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='Resize', size=384, backend='pillow'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='Collect', keys=['img'])
+]
 
 # train
 data_cfg = dict(
-    batch_size = 32,
+    batch_size = 4,
     num_workers = 4,
     train = dict(
         pretrained_flag = False,
-        pretrained_weights = 'datas/mobilenet_v3_small.pth',
+        pretrained_weights = '',
         freeze_flag = False,
         freeze_layers = ('backbone',),
         epoches = 100,
     ),
     test=dict(
-        ckpt = 'logs/20220202091725/Val_Epoch019-Loss0.215.pth',
+        ckpt = '',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),
@@ -51,11 +57,11 @@ data_cfg = dict(
 )
 
 # batch 32
-# lr = 5e-4 * 32 / 64
+# lr = 5e-4 * 16 / 64
 # optimizer
 optimizer_cfg = dict(
     type='AdamW',
-    lr=5e-4 * 32 / 64,
+    lr=5e-4 * 16 / 64,
     weight_decay=0.05,
     eps=1e-8,
     betas=(0.9, 0.999),)
