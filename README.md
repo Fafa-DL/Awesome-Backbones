@@ -16,11 +16,14 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.05.19`** : 更新[学习率策略可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Lr_visualization.md)，更新**Wide-ResNet**
-
 **`2022.06.02`** : 代码优化；支持从**中断处恢复训练**
 
 **`2022.07.08`** : 修复数据集标签信息兼容问题
+
+**`2022.08.03`** : 重要更新,**v0.6.0**发布
+- 升级数据增强接口，全面更新数据增强定义方式
+- 自动检测灰度图或彩色图，适配单通道或三通道网络
+- Val_pipeline做了调整
 
 ## 测试环境
 
