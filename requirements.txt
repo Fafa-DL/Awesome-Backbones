@@ -4,6 +4,7 @@ scipy==1.4.1
 numpy==1.19.2
 matplotlib==3.2.1
 opencv_python==3.4.1.15
+opencv_contrib_python==3.4.1.15
 tqdm==4.62.3
 Pillow==8.4.0
 h5py==3.1.0
