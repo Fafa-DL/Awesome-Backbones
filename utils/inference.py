@@ -5,7 +5,7 @@ import cv2
 from PIL import Image
 
 from core.visualization import imshow_infos
-from models.build import BuildNet
+from core.datasets.compose import Compose
 from torchvision import transforms
 from utils.checkpoint import load_checkpoint
 
@@ -45,14 +45,11 @@ def inference_model(model, image, val_pipeline, classes_names):
         result (dict): The classification results that contains
             `class_name`, `pred_label` and `pred_score`.
     """
-    image = Image.open(image)
-    if not (len(np.shape(image)) == 3 and np.shape(image)[2] == 3):
-            image = image.convert('RGB')
-    funcs = []
 
-    for func in val_pipeline:
-        funcs.append(eval('transforms.'+func.pop('type'))(**func))
-    image = transforms.Compose(funcs)(image).unsqueeze(0)
+    pipeline = Compose(val_pipeline)
+    info = {'img_prefix': None}
+    info['img_info'] = {'filename': image}
+    image = pipeline(info)['img'].unsqueeze(0)
 
     device = next(model.parameters()).device  # model device
     

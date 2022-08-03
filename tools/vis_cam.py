@@ -8,8 +8,8 @@ import pkg_resources
 import re
 from pathlib import Path
 import torch
-from PIL import Image
-from torchvision import transforms
+# from PIL import Image
+# from torchvision import transforms
 import cv2
 import numpy as np
 
@@ -18,6 +18,7 @@ from utils.version_utils import digit_version
 from utils.train_utils import  file2dict
 from utils.misc import to_2tuple
 from utils.inference import init_model
+from core.datasets.compose import Compose
 from torch.nn import BatchNorm1d, BatchNorm2d, GroupNorm, LayerNorm
 
 
@@ -32,7 +33,7 @@ except ImportError:
                       '3rd party package pytorch_grad_cam.')
 
 # set of transforms, which just change data format, not change the pictures
-FORMAT_TRANSFORMS_SET = {'ToTensor', 'Normalize'}
+FORMAT_TRANSFORMS_SET = {'ToTensor', 'Normalize', 'ImageToTensor', 'Collect'}
 
 # Supported grad-cam type map
 METHOD_MAP = {
@@ -152,40 +153,33 @@ def build_reshape_transform(model, args):
 
     return _reshape_transform
 
-
 def apply_transforms(img_path, pipeline_cfg):
-    img = Image.open(img_path)
-    # cv2.imshow('0',np.float32(img)/255)
-    # cv2.waitKey(0)
+    """Apply transforms pipeline and get both formatted data and the image
+    without formatting."""
+    data = dict(img_info=dict(filename=img_path), img_prefix=None)
+
     def split_pipeline_cfg(pipeline_cfg):
         """to split the transfoms into image_transforms and
         format_transforms."""
         image_transforms_cfg, format_transforms_cfg = [], []
-
+        if pipeline_cfg[0]['type'] != 'LoadImageFromFile':
+            pipeline_cfg.insert(0, dict(type='LoadImageFromFile'))
         for transform in pipeline_cfg:
             if transform['type'] in FORMAT_TRANSFORMS_SET:
                 format_transforms_cfg.append(transform)
             else:
                 image_transforms_cfg.append(transform)
         return image_transforms_cfg, format_transforms_cfg
-    
-    def apply_func(cfg,image):
-        cfg = copy.deepcopy(cfg)
-        if not (len(np.shape(image)) == 3 and np.shape(image)[2] == 3):
-                image = image.convert('RGB')
-        funcs = []
 
-        for func in cfg:
-            funcs.append(eval('transforms.'+func.pop('type'))(**func))
-        image_transformed = transforms.Compose(funcs)(image)
-        return image_transformed
     image_transforms, format_transforms = split_pipeline_cfg(pipeline_cfg)
-    
-    inference_img = apply_func(image_transforms,img)
-    format_data = apply_func(format_transforms,inference_img)
+    image_transforms = Compose(image_transforms)
+    format_transforms = Compose(format_transforms)
+
+    intermediate_data = image_transforms(data)
+    inference_img = copy.deepcopy(intermediate_data['img'])
+    format_data = format_transforms(intermediate_data)
 
     return format_data, inference_img
-
 
 class MMActivationsAndGradients(ActivationsAndGradients):
     """Activations and gradients manager for mmcls models."""
@@ -262,6 +256,7 @@ def show_cam_grad(grayscale_cam, src_img, title, out_path=None):
     else:
         cv2.imshow(title, visualization_img)
         cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 
 def get_default_traget_layers(model, args):
@@ -350,7 +345,7 @@ def main():
 
     # calculate cam grads and show|save the visualization image
     grayscale_cam = cam(
-        data.unsqueeze(0),
+        data['img'].unsqueeze(0),
         targets,
         eigen_smooth=args.eigen_smooth,
         aug_smooth=args.aug_smooth)

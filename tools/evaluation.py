@@ -3,7 +3,8 @@ import os
 import sys
 sys.path.insert(0,os.getcwd())
 import argparse
-import numpy as np
+# import numpy as np
+import copy
 from numpy import mean
 from tqdm import tqdm
 from terminaltables import AsciiTable
@@ -141,6 +142,7 @@ def main():
     """
     制作测试集并喂入Dataloader
     """
+    val_pipeline = copy.deepcopy(train_pipeline)
     test_dataset = Mydataset(test_datas, val_pipeline)
     test_loader = DataLoader(test_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True, collate_fn=collate)
     

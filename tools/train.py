@@ -1,6 +1,8 @@
 import os
 import sys
+# from typing import Sequence
 sys.path.insert(0,os.getcwd())
+import copy
 import argparse
 import shutil
 import time
@@ -45,7 +47,7 @@ def main():
     args = parse_args()
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
     print_info(model_cfg)
-    
+
     # 初始化
     meta = dict()
     dirname = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
@@ -90,6 +92,7 @@ def main():
     
     # 制作数据集->数据增强&预处理,详见https://www.bilibili.com/video/BV1zY4y167Ju
     train_dataset = Mydataset(train_datas, train_pipeline)
+    val_pipeline = copy.deepcopy(train_pipeline)
     val_dataset = Mydataset(val_datas, val_pipeline)
     train_loader = DataLoader(train_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'),pin_memory=True, drop_last=True, collate_fn=collate)
     val_loader = DataLoader(val_dataset, shuffle=False, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True,
