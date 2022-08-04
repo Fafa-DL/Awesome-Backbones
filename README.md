@@ -5,7 +5,7 @@ Awesome backbones for image classification
 
 [![BILIBILI](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/Bilibili.png)](https://space.bilibili.com/46880349)
 
-![](https://img.shields.io/badge/Awesome%20Backbones-v0.5.8-brightgreen)
+![](https://img.shields.io/badge/Awesome%20Backbones-v0.6.0-brightgreen)
 ![](https://img.shields.io/badge/PyTorch-%3E%3Dv1.7.1-green)
 ![](https://img.shields.io/badge/Python-%3E%3Dv3.6-yellowgreen)
 [![GitHub forks](https://img.shields.io/github/forks/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
@@ -24,6 +24,7 @@ Awesome backbones for image classification
 - 升级数据增强接口，全面更新数据增强定义方式
 - 自动检测灰度图或彩色图，适配单通道或三通道网络
 - Val_pipeline做了调整
+- 新增视频流检测
 
 ## 测试环境
 
