@@ -2,11 +2,9 @@
 import numpy as np
 import torch
 import cv2
-from PIL import Image
 
 from core.visualization import imshow_infos
 from core.datasets.compose import Compose
-from torchvision import transforms
 from utils.checkpoint import load_checkpoint
 
 
@@ -40,17 +38,23 @@ def inference_model(model, image, val_pipeline, classes_names):
         model (nn.Module): The loaded classifier.
         image (str/ndarray): The image filename or loaded image.
         val_pipeline (dict): The image preprocess pipeline.
+        classes_names(list): The classes of datasets.
 
     Returns:
         result (dict): The classification results that contains
             `class_name`, `pred_label` and `pred_score`.
     """
+    if isinstance(image, str):
+        if val_pipeline[0]['type'] != 'LoadImageFromFile':
+            val_pipeline.insert(0, dict(type='LoadImageFromFile'))
+        data = dict(img_info=dict(filename=image), img_prefix=None)
+    else:
+        if val_pipeline[0]['type'] == 'LoadImageFromFile':
+            val_pipeline.pop(0)
+        data = dict(img=image, filename=None)
 
     pipeline = Compose(val_pipeline)
-    info = {'img_prefix': None}
-    info['img_info'] = {'filename': image}
-    image = pipeline(info)['img'].unsqueeze(0)
-
+    image = pipeline(data)['img'].unsqueeze(0)
     device = next(model.parameters()).device  # model device
     
     # forward the model
@@ -60,6 +64,7 @@ def inference_model(model, image, val_pipeline, classes_names):
         result = {'pred_label': pred_label.item(), 'pred_score': float(pred_score)}
     result['pred_class'] = classes_names[result['pred_label']]
     return result
+
 
 def show_result(img,
                 result,
@@ -138,3 +143,4 @@ def show_result_pyplot(model,
         win_name=title,
         wait_time=wait_time,
         out_file=out_file)
+

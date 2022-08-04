@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 from argparse import ArgumentParser
 import os
 import sys
@@ -14,14 +13,15 @@ def main():
     parser.add_argument('img', help='Image file')
     parser.add_argument('config', help='Config file')
     parser.add_argument(
+        '--classes-map', default='datas/annotations.txt', help='classes map of datasets')
+    parser.add_argument(
         '--device', default='cuda', help='Device used for inference')
     parser.add_argument(
         '--save-path',
         help='The path to save prediction image, default not to save.')
     args = parser.parse_args()
 
-    classes_map = 'datas/annotations.txt' 
-    classes_names, _ = get_info(classes_map)
+    classes_names, _ = get_info(args.classes_map)
     # build the model from a config file and a checkpoint file
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
     if args.device is not None:
