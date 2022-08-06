@@ -2,11 +2,9 @@
 from collections.abc import Sequence
 import copy
 
-from .loading import LoadImageFromFile
-from .transforms import CenterCrop, Normalize, RandomCrop, RandomErasing, RandomFlip, RandomResizedCrop, Resize
-from .formatting import Collect, ImageToTensor, ToNumpy, ToPIL, ToTensor, Transpose, to_tensor
+from .build import build_from_cfg, PIPELINES
 
-
+@PIPELINES.register_module()
 class Compose(object):
     """Compose a data pipeline with a sequence of transforms.
 
@@ -21,7 +19,8 @@ class Compose(object):
         for transform in transforms:
             if isinstance(transform, dict):
                 transform_cfg = copy.deepcopy(transform)
-                transform = eval(transform_cfg.pop('type'))(**transform_cfg)
+                # transform = eval(transform_cfg.pop('type'))(**transform_cfg)
+                transform = build_from_cfg(transform, PIPELINES)
                 self.transforms.append(transform)
             elif callable(transform):
                 self.transforms.append(transform)

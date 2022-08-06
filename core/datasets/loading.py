@@ -5,7 +5,10 @@ import cv2
 import numpy as np
 
 from core.datasets.io import imfrombytes
+from .build import PIPELINES
 
+
+@PIPELINES.register_module()
 class LoadImageFromFile(object):
     """Load an image from file.
 
@@ -49,7 +52,6 @@ class LoadImageFromFile(object):
         else:
             filename = results['img_info']['filename']
 
-        # img = cv2.imread(filename)
         img_bytes = self.get(filename)
         img = imfrombytes(img_bytes, flag=self.color_type)
         

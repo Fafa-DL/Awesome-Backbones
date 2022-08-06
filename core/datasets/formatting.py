@@ -8,6 +8,7 @@ import torch
 from PIL import Image
 
 from utils.misc import is_str
+from .build import PIPELINES
 
 
 def to_tensor(data):
@@ -33,6 +34,7 @@ def to_tensor(data):
             '`Sequence`, `int` and `float`')
 
 
+@PIPELINES.register_module()
 class ToTensor(object):
 
     def __init__(self, keys):
@@ -47,6 +49,7 @@ class ToTensor(object):
         return self.__class__.__name__ + f'(keys={self.keys})'
 
 
+@PIPELINES.register_module()
 class ImageToTensor(object):
 
     def __init__(self, keys):
@@ -64,6 +67,7 @@ class ImageToTensor(object):
         return self.__class__.__name__ + f'(keys={self.keys})'
 
 
+@PIPELINES.register_module()
 class Transpose(object):
 
     def __init__(self, keys, order):
@@ -80,6 +84,7 @@ class Transpose(object):
             f'(keys={self.keys}, order={self.order})'
 
 
+@PIPELINES.register_module()
 class ToPIL(object):
 
     def __init__(self):
@@ -90,6 +95,7 @@ class ToPIL(object):
         return results
 
 
+@PIPELINES.register_module()
 class ToNumpy(object):
 
     def __init__(self):
@@ -100,6 +106,7 @@ class ToNumpy(object):
         return results
 
 
+@PIPELINES.register_module()
 class Collect(object):
     """Collect data from the loader relevant to the specific task.
 
@@ -145,6 +152,7 @@ class Collect(object):
             f'(keys={self.keys}, meta_keys={self.meta_keys})'
 
 
+@PIPELINES.register_module()
 class WrapFieldsToLists(object):
     """Wrap fields of the data dictionary into lists for evaluation.
 
@@ -174,6 +182,7 @@ class WrapFieldsToLists(object):
         return f'{self.__class__.__name__}()'
 
 
+@PIPELINES.register_module()
 class ToHalf(object):
 
     def __init__(self, keys):
@@ -186,5 +195,3 @@ class ToHalf(object):
             else:
                 results[k] = results[k].astype(np.float16)
         return results
-
-# __all__ = ['ToHalf', 'to_tensor', 'ToTensor', 'ImageToTensor', 'Transpose', 'ToPIL', 'ToNumpy', 'Collect', 'WrapFieldsToLists']

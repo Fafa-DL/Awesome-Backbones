@@ -7,18 +7,19 @@ from typing import Sequence
 
 import numpy as np
 
-# from .compose import Compose
+from .compose import Compose
 from .geometric import imcrop, imflip, impad, imresize
 from .colorspace import rgb2gray
 from .photometric import adjust_lighting, imnormalize
 from utils.misc import is_str
-
+from .build import PIPELINES
 try:
     import albumentations
 except ImportError:
     albumentations = None
 
 
+@PIPELINES.register_module()
 class RandomCrop(object):
     """Crop the given Image at a random location.
 
@@ -138,6 +139,7 @@ class RandomCrop(object):
                 f'(size={self.size}, padding={self.padding})')
 
 
+@PIPELINES.register_module()
 class RandomResizedCrop(object):
     """Crop the given image to random size and aspect ratio.
 
@@ -386,6 +388,7 @@ class RandomResizedCrop(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class RandomGrayscale(object):
     """Randomly convert image to grayscale with a probability of gray_prob.
 
@@ -429,6 +432,7 @@ class RandomGrayscale(object):
         return self.__class__.__name__ + f'(gray_prob={self.gray_prob})'
 
 
+@PIPELINES.register_module()
 class RandomFlip(object):
     """Flip the image randomly.
 
@@ -470,6 +474,7 @@ class RandomFlip(object):
         return self.__class__.__name__ + f'(flip_prob={self.flip_prob})'
 
 
+@PIPELINES.register_module()
 class RandomErasing(object):
     """Randomly selects a rectangle region in an image and erase pixels.
 
@@ -609,6 +614,7 @@ class RandomErasing(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class Pad(object):
     """Pad images.
 
@@ -660,6 +666,7 @@ class Pad(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class Resize(object):
     """Resize images.
 
@@ -764,6 +771,7 @@ class Resize(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class CenterCrop(object):
     r"""Center crop the image.
 
@@ -869,6 +877,7 @@ class CenterCrop(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class Normalize(object):
     """Normalize the image.
 
@@ -900,59 +909,61 @@ class Normalize(object):
         return repr_str
 
 
-# class ColorJitter(object):
-#     """Randomly change the brightness, contrast and saturation of an image.
+@PIPELINES.register_module()
+class ColorJitter(object):
+    """Randomly change the brightness, contrast and saturation of an image.
 
-#     Args:
-#         brightness (float): How much to jitter brightness.
-#             brightness_factor is chosen uniformly from
-#             [max(0, 1 - brightness), 1 + brightness].
-#         contrast (float): How much to jitter contrast.
-#             contrast_factor is chosen uniformly from
-#             [max(0, 1 - contrast), 1 + contrast].
-#         saturation (float): How much to jitter saturation.
-#             saturation_factor is chosen uniformly from
-#             [max(0, 1 - saturation), 1 + saturation].
-#     """
+    Args:
+        brightness (float): How much to jitter brightness.
+            brightness_factor is chosen uniformly from
+            [max(0, 1 - brightness), 1 + brightness].
+        contrast (float): How much to jitter contrast.
+            contrast_factor is chosen uniformly from
+            [max(0, 1 - contrast), 1 + contrast].
+        saturation (float): How much to jitter saturation.
+            saturation_factor is chosen uniformly from
+            [max(0, 1 - saturation), 1 + saturation].
+    """
 
-#     def __init__(self, brightness, contrast, saturation):
-#         self.brightness = brightness
-#         self.contrast = contrast
-#         self.saturation = saturation
+    def __init__(self, brightness, contrast, saturation):
+        self.brightness = brightness
+        self.contrast = contrast
+        self.saturation = saturation
 
-#     def __call__(self, results):
-#         brightness_factor = random.uniform(0, self.brightness)
-#         contrast_factor = random.uniform(0, self.contrast)
-#         saturation_factor = random.uniform(0, self.saturation)
-#         color_jitter_transforms = [
-#             dict(
-#                 type='Brightness',
-#                 magnitude=brightness_factor,
-#                 prob=1.,
-#                 random_negative_prob=0.5),
-#             dict(
-#                 type='Contrast',
-#                 magnitude=contrast_factor,
-#                 prob=1.,
-#                 random_negative_prob=0.5),
-#             dict(
-#                 type='ColorTransform',
-#                 magnitude=saturation_factor,
-#                 prob=1.,
-#                 random_negative_prob=0.5)
-#         ]
-#         random.shuffle(color_jitter_transforms)
-#         transform = Compose(color_jitter_transforms)
-#         return transform(results)
+    def __call__(self, results):
+        brightness_factor = random.uniform(0, self.brightness)
+        contrast_factor = random.uniform(0, self.contrast)
+        saturation_factor = random.uniform(0, self.saturation)
+        color_jitter_transforms = [
+            dict(
+                type='Brightness',
+                magnitude=brightness_factor,
+                prob=1.,
+                random_negative_prob=0.5),
+            dict(
+                type='Contrast',
+                magnitude=contrast_factor,
+                prob=1.,
+                random_negative_prob=0.5),
+            dict(
+                type='ColorTransform',
+                magnitude=saturation_factor,
+                prob=1.,
+                random_negative_prob=0.5)
+        ]
+        random.shuffle(color_jitter_transforms)
+        transform = Compose(color_jitter_transforms)
+        return transform(results)
 
-#     def __repr__(self):
-#         repr_str = self.__class__.__name__
-#         repr_str += f'(brightness={self.brightness}, '
-#         repr_str += f'contrast={self.contrast}, '
-#         repr_str += f'saturation={self.saturation})'
-#         return repr_str
+    def __repr__(self):
+        repr_str = self.__class__.__name__
+        repr_str += f'(brightness={self.brightness}, '
+        repr_str += f'contrast={self.contrast}, '
+        repr_str += f'saturation={self.saturation})'
+        return repr_str
 
 
+@PIPELINES.register_module()
 class Lighting(object):
     """Adjust images lighting using AlexNet-style PCA jitter.
 
@@ -999,6 +1010,7 @@ class Lighting(object):
         return repr_str
 
 
+@PIPELINES.register_module()
 class Albu(object):
     """Albumentation augmentation.
 
@@ -1129,6 +1141,3 @@ class Albu(object):
     def __repr__(self):
         repr_str = self.__class__.__name__ + f'(transforms={self.transforms})'
         return repr_str
-
-# __all__ = ['CenterCrop', 'ColorJitter', 'Lighting', 'Normalize', 'Pad', 'RandomCrop', 'RandomErasing', 'RandomFlip',
-# 'RandomGrayscale', 'RandomResizedCrop', 'Resize']
