@@ -5,7 +5,7 @@ Awesome backbones for image classification
 
 [![BILIBILI](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/Bilibili.png)](https://space.bilibili.com/46880349)
 
-![](https://img.shields.io/badge/Awesome%20Backbones-v0.6.0-brightgreen)
+![](https://img.shields.io/badge/Awesome%20Backbones-v0.6.1-brightgreen)
 ![](https://img.shields.io/badge/PyTorch-%3E%3Dv1.7.1-green)
 ![](https://img.shields.io/badge/Python-%3E%3Dv3.6-yellowgreen)
 [![GitHub forks](https://img.shields.io/github/forks/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
