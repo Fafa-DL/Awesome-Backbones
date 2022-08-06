@@ -16,8 +16,6 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.06.02`** : 代码优化；支持从**中断处恢复训练**
-
 **`2022.07.08`** : 修复数据集标签信息兼容问题
 
 **`2022.08.03`** : 重要更新,**v0.6.0**发布
@@ -25,6 +23,10 @@ Awesome backbones for image classification
 - 自动检测灰度图或彩色图，适配单通道或三通道网络
 - Val_pipeline做了调整
 - 新增视频流检测
+
+**`2022.08.06`** : **v0.6.1**发布
+- 由于数据增强存在交叉引用问题，采用mmcla中build方式对数据增强方法进行注册，详见**core/datasets/build**
+- 新增Auto与Rand多种混合增强方法
 
 ## 测试环境
 
