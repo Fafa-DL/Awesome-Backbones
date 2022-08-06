@@ -1,33 +1,26 @@
 # model settings
+
 model_cfg = dict(
-    type='ImageClassifier',
-    backbone=dict(
-        type='VisionTransformer',
-        arch='l',
-        img_size=224,
-        patch_size=32,
-        drop_rate=0.1,
-        init_cfg=[
-            dict(
-                type='Kaiming',
-                layer='Conv2d',
-                mode='fan_in',
-                nonlinearity='linear')
-        ]),
-    neck=None,
+    backbone=dict(type='MobileNetV3', arch='small'),
+    neck=dict(type='GlobalAveragePooling'),
     head=dict(
-        type='VisionTransformerClsHead',
-        num_classes=1000,
-        in_channels=1024,
-        hidden_dim=3072,
-        loss=dict(type='CrossEntropyLoss', loss_weight=1.0),
-        topk=(1, 5),
-    ))
+        type='StackedLinearClsHead',
+        num_classes=5,
+        in_channels=576,
+        mid_channels=[1024],
+        dropout_rate=0.2,
+        act_cfg=dict(type='HSwish'),
+        loss=dict(
+            type='CrossEntropyLoss', loss_weight=1.0),
+        init_cfg=dict(
+            type='Normal', layer='Linear', mean=0., std=0.01, bias=0.),
+        topk=(1, 5)))
 
 # dataloader pipeline
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-policy_imagenet = [
+
+policies = [
     [
         dict(type='Posterize', bits=4, prob=0.4),
         dict(type='Rotate', angle=30., prob=0.6)
@@ -121,15 +114,19 @@ policy_imagenet = [
     [dict(type='Equalize', prob=0.8),
      dict(type='Equalize', prob=0.6)],
 ]
+
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(
-        type='RandomResizedCrop',
-        size=224,
-        backend='pillow',
-        interpolation='bicubic'),
+    dict(type='RandomResizedCrop', size=224, backend='pillow'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
-    dict(type='AutoAugment', policies=policy_imagenet),
+    dict(type='AutoAugment', policies=policies),
+    dict(
+        type='RandomErasing',
+        erase_prob=0.2,
+        mode='const',
+        min_area_ratio=0.02,
+        max_area_ratio=1 / 3,
+        fill_color=img_norm_cfg['mean']),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='ToTensor', keys=['gt_label']),
@@ -137,11 +134,7 @@ train_pipeline = [
 ]
 val_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(
-        type='Resize',
-        size=(256, -1),
-        backend='pillow',
-        interpolation='bicubic'),
+    dict(type='Resize', size=(256, -1), backend='pillow'),
     dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
@@ -151,16 +144,16 @@ val_pipeline = [
 # train
 data_cfg = dict(
     batch_size = 32,
-    num_workers = 4,
+    num_workers = 2,
     train = dict(
-        pretrained_flag = False,
-        pretrained_weights = '',
+        pretrained_flag = True,
+        pretrained_weights = 'datas/mobilenet_v3_small.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),
         epoches = 100,
     ),
     test=dict(
-        ckpt = '',
+        ckpt = 'logs/MobileNetV3/2022-08-04-12-15-04/Val_Epoch096-Acc92.898.pth',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),
@@ -170,23 +163,16 @@ data_cfg = dict(
     )
 )
 
-# batch 32
-# lr = 5e-4 * 16 / 64
 # optimizer
 optimizer_cfg = dict(
-    type='AdamW',
-    lr=5e-4 * 16 / 64,
-    weight_decay=0.05,
-    eps=1e-8,
-    betas=(0.9, 0.999),)
+    type='RMSprop',
+    lr=0.001,
+    alpha=0.9,
+    momentum=0.9,
+    eps=0.0316,
+    weight_decay=1e-5)
 
 # learning 
-lr_config = dict(
-    type='CosineAnnealingLrUpdater',
-    by_epoch=False,
-    min_lr_ratio=1e-2,
-    warmup='linear',
-    warmup_ratio=1e-3,
-    warmup_iters=3,
-    warmup_by_epoch=True
-)
+lr_config = dict(type='StepLrUpdater', step=2, gamma=0.973, by_epoch=True)
+#lr_config = dict(type='StepLrUpdater', warmup='linear', warmup_iters=500, warmup_ratio=0.25,step=[30,60,90])
+

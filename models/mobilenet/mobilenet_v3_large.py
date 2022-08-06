@@ -22,6 +22,13 @@ train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='RandomResizedCrop', size=224, backend='pillow'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
+    dict(
+        type='RandomErasing',
+        erase_prob=0.2,
+        mode='const',
+        min_area_ratio=0.02,
+        max_area_ratio=1 / 3,
+        fill_color=img_norm_cfg['mean']),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='ToTensor', keys=['gt_label']),

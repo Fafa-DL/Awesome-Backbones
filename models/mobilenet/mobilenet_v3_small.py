@@ -17,25 +17,20 @@ model_cfg = dict(
         topk=(1, 5)))
 
 # dataloader pipeline
-# train_pipeline = (
-#     dict(type='RandomResizedCrop', size=224),
-#     dict(type='RandomHorizontalFlip', p=0.5),
-#     dict(type='ToTensor'),
-#     dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-#     dict(type='RandomErasing',p=0.2,ratio=(0.02,1/3)),
-# )
-# val_pipeline = (
-#     dict(type='Resize', size=int(224*1.2)),
-#     dict(type='CenterCrop', size=224),
-#     dict(type='ToTensor'),
-#     dict(type='Normalize', mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-# )
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='RandomResizedCrop', size=224, backend='pillow'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
+    dict(
+        type='RandomErasing',
+        erase_prob=0.2,
+        mode='const',
+        min_area_ratio=0.02,
+        max_area_ratio=1 / 3,
+        fill_color=img_norm_cfg['mean']),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='ToTensor', keys=['gt_label']),
@@ -62,7 +57,7 @@ data_cfg = dict(
         epoches = 100,
     ),
     test=dict(
-        ckpt = 'logs/MobileNetV3/2022-01-26-10-23-03/Val_Epoch060-Acc88.352.pth',
+        ckpt = 'logs/MobileNetV3/2022-08-04-12-15-04/Val_Epoch096-Acc92.898.pth',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),

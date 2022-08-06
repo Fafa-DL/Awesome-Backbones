@@ -11,22 +11,37 @@ model_cfg = dict(
     ))
 
 # dataloader pipeline
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+# normalization params, in order of BGR
+NORM_MEAN = [103.53, 116.28, 123.675]
+NORM_STD = [57.375, 57.12, 58.395]
+
+# lighting params, in order of RGB, from repo. pycls
+EIGVAL = [0.2175, 0.0188, 0.0045]
+EIGVEC = [[-0.5675, 0.7192, 0.4009], [-0.5808, -0.0045, -0.814],
+          [-0.5836, -0.6948, 0.4203]]
+
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='RandomResizedCrop', size=224, backend='pillow'),
+    dict(type='RandomResizedCrop', size=224),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(
+        type='Lighting',
+        eigval=EIGVAL,
+        eigvec=EIGVEC,
+        alphastd=25.5,  # because the value range of images is [0,255]
+        to_rgb=True
+    ),  # BGR image from cv2 in LoadImageFromFile, convert to RGB here
+    dict(type='Normalize', mean=NORM_MEAN, std=NORM_STD,
+         to_rgb=True),  # RGB2BGR
     dict(type='ImageToTensor', keys=['img']),
     dict(type='ToTensor', keys=['gt_label']),
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
 val_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='Resize', size=(256, -1), backend='pillow'),
+    dict(type='Resize', size=(256, -1)),
     dict(type='CenterCrop', crop_size=224),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(type='Normalize', mean=NORM_MEAN, std=NORM_STD, to_rgb=False),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='Collect', keys=['img'])
 ]
