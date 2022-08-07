@@ -1,6 +1,6 @@
 # Copyright (c) OpenMMLab. All rights reserved.
 import copy
-# import inspect
+import inspect
 import random
 from math import ceil
 from numbers import Number
@@ -35,13 +35,13 @@ def merge_hparams(policy: dict, hparams: dict):
     Returns:
         dict: Policy config dict after adding ``hparams``.
     """
-    # op = PIPELINES.get(policy['type'])
-    # assert op is not None, f'Invalid policy type "{policy["type"]}".'
-    # for key, value in hparams.items():
-    #     if policy.get(key, None) is not None:
-    #         continue
-    #     if key in inspect.getfullargspec(op.__init__).args:
-    #         policy[key] = value
+    op = PIPELINES.get(policy['type'])
+    assert op is not None, f'Invalid policy type "{policy["type"]}".'
+    for key, value in hparams.items():
+        if policy.get(key, None) is not None:
+            continue
+        if key in inspect.getfullargspec(op.__init__).args:
+            policy[key] = value
     return policy
 
 
