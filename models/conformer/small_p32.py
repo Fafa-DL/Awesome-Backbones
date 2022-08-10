@@ -92,6 +92,14 @@ train_pipeline = [
     dict(type='ToTensor', keys=['gt_label']),
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
+val_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='Resize', size=(256, -1), backend='pillow'),
+    dict(type='CenterCrop', crop_size=224),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='Collect', keys=['img'])
+]
 
 # train
 data_cfg = dict(

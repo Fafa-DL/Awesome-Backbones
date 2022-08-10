@@ -139,7 +139,7 @@ train_pipeline = [
     dict(type='ToTensor', keys=['gt_label']),
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
-test_pipeline = [
+val_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='CenterCrop',
