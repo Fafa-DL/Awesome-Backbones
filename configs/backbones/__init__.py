@@ -1,4 +1,3 @@
-import imp
 from .mobilenet_v3 import MobileNetV3
 from .mobilenet_v2 import MobileNetV2
 from .alexnet import AlexNet
