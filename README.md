@@ -24,7 +24,7 @@ Awesome backbones for image classification
 
 **`2022.09.01`** 
 - 新增全类别**ROC Curve**评价指标
-- 新增全类别**P-R Curve**、**AP值**评价指标
+- 新增全类别**P-R Curve**、**Average Precision(AP)值**评价指标
 
 ## 测试环境
 
