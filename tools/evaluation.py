@@ -1,10 +1,12 @@
-import imp
 import os
 import sys
 sys.path.insert(0,os.getcwd())
 import argparse
-# import numpy as np
+
 import copy
+import numpy as np
+from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score, precision_score
+import matplotlib.pyplot as plt
 from numpy import mean
 from tqdm import tqdm
 from terminaltables import AsciiTable
@@ -22,20 +24,21 @@ from models.build import BuildNet
 from core.evaluations import evaluate
 from utils.inference import init_model
 
-def get_metrics_output(eval_results, metrics_output,classes_names, indexs):
+def get_metrics_output(eval_results, metrics_output,classes_names, indexs, APs):
     f = open(metrics_output,'a', newline='')
     writer = csv.writer(f)
     
     """
     输出并保存Accuracy、Precision、Recall、F1 Score、Confusion matrix结果
     """
-    p_r_f1 = [['Classes','Precision','Recall','F1 Score']]
+    p_r_f1 = [['Classes','Precision','Recall','F1 Score', 'Average Precision']]
     for i in range(len(classes_names)):
         data = []
         data.append(classes_names[i])
         data.append('{:.2f}'.format(eval_results.get('precision')[indexs[i]]))
         data.append('{:.2f}'.format(eval_results.get('recall')[indexs[i]]))
         data.append('{:.2f}'.format(eval_results.get('f1_score')[indexs[i]]))
+        data.append('{:.2f}'.format(APs[indexs[i]]*100))
         p_r_f1.append(data)
     TITLE = 'Classes Results'
     TABLE_DATA_1 = tuple(p_r_f1)
@@ -91,6 +94,87 @@ def get_prediction_output(preds,targets,image_paths,classes_names,indexs,predict
         
     writer.writerows(results)
 
+def plot_ROC_curve(preds, targets, classes_names, savedir):
+    rows = len(targets)
+    cols = len(preds[0])
+    ROC_output = os.path.join(savedir, 'ROC')
+    PR_output = os.path.join(savedir, 'P-R')
+    os.makedirs(ROC_output)
+    os.makedirs(PR_output)
+    APs = []
+    for j in range(cols):
+        gt, pre, pre_score = [], [], []
+        for i in range(rows):
+            if targets[i].item() == j:
+                gt.append(1)
+            else:
+                gt.append(0)
+            
+            if torch.argmax(preds[i]).item() == j:
+                pre.append(1)
+            else:
+                pre.append(0)
+
+            pre_score.append(preds[i][j].item())
+
+        # ROC
+        ROC_csv_path = os.path.join(ROC_output,classes_names[j] + '.csv')
+        ROC_img_path = os.path.join(ROC_output,classes_names[j] + '.png')
+        ROC_f = open(ROC_csv_path,'a', newline='')
+        ROC_writer = csv.writer(ROC_f)
+        ROC_results = []
+
+        FPR,TPR,threshold=roc_curve(targets.tolist(), pre_score, pos_label=j)
+
+        AUC=auc(FPR,TPR)
+        
+        ROC_results.append(['AUC', AUC])
+        ROC_results.append(['FPR'] + FPR.tolist())
+        ROC_results.append(['TPR'] + TPR.tolist())
+        ROC_results.append(['Threshold'] + threshold.tolist())
+        ROC_writer.writerows(ROC_results)
+
+        plt.figure()
+        plt.title(classes_names[j] + ' ROC CURVE (AUC={:.2f})'.format(AUC))
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.xlim([0.0,1.0])
+        plt.ylim([0.0,1.01])
+        plt.plot(FPR,TPR,color='g')
+        plt.plot([0, 1], [0, 1], color='m', linestyle='--')
+        plt.savefig(ROC_img_path)
+
+        # AP (gt为{0,1})
+        AP = average_precision_score(gt, pre_score)
+        APs.append(AP)
+
+        # P-R
+        PR_csv_path = os.path.join(PR_output,classes_names[j] + '.csv')
+        PR_img_path = os.path.join(PR_output,classes_names[j] + '.png')
+        PR_f = open(PR_csv_path,'a', newline='')
+        PR_writer = csv.writer(PR_f)
+        PR_results = []
+        
+        PRECISION, RECALL, thresholds = precision_recall_curve(targets.tolist(), pre_score, pos_label=j)
+
+        PR_results.append(['RECALL'] + RECALL.tolist())
+        PR_results.append(['PRECISION'] + PRECISION.tolist())
+        PR_results.append(['Threshold'] + thresholds.tolist())
+        PR_writer.writerows(PR_results)
+
+        plt.figure()
+        plt.title(classes_names[j] + ' P-R CURVE (AP={:.2f})'.format(AP))
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.xlim([0.0,1.0])
+        plt.ylim([0.0,1.01])
+        plt.plot(RECALL,PRECISION,color='g')
+        plt.savefig(PR_img_path)
+
+    return APs
+        
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Evaluate a model')
     parser.add_argument('config', help='train config file path')
@@ -113,9 +197,9 @@ def main():
     """
     dirname = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
     save_dir = os.path.join('eval_results',model_cfg.get('backbone').get('type'),dirname)
-    os.makedirs(save_dir)
     metrics_output = os.path.join(save_dir,'metrics_output.csv')
     prediction_output = os.path.join(save_dir,'prediction_results.csv')
+    os.makedirs(save_dir)
     
     """
     获取类别名以及对应索引、获取标注文件
@@ -162,8 +246,10 @@ def main():
                 
     eval_results = evaluate(torch.cat(preds),torch.cat(targets),data_cfg.get('test').get('metrics'),data_cfg.get('test').get('metric_options'))
     
-    get_metrics_output(eval_results,metrics_output,classes_names,indexs)
-    get_prediction_output(torch.cat(preds),torch.cat(targets),image_paths, classes_names, indexs, prediction_output)                 
+    APs = plot_ROC_curve(torch.cat(preds),torch.cat(targets), classes_names, save_dir) 
+    get_metrics_output(eval_results,metrics_output,classes_names,indexs,APs)
+    get_prediction_output(torch.cat(preds),torch.cat(targets),image_paths, classes_names, indexs, prediction_output)
+           
 
 if __name__ == "__main__":
     main()
