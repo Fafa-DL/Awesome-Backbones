@@ -16,15 +16,15 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.08.06`** : **v0.6.1**发布
-- 由于数据增强存在交叉引用问题，采用mmcla中build方式对数据增强方法进行注册，详见**core/datasets/build**
-- 新增Auto与Rand多种混合增强方法
-
-**`2022.08.24`** : 新增批量图片检测功能，tools/batch_test.py
+**`2022.08.24`** : 
+- 新增批量图片检测功能，tools/batch_test.py
 
 **`2022.09.01`** 
 - 新增全类别**ROC Curve**评价指标
 - 新增全类别**P-R Curve**、**Average Precision(AP)值**评价指标
+
+**`2022.09.09`** 
+- 新增计算模型参数量Parameters与浮点运算量Flops功能，详见[Calculate Flops](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
 
 ## 测试环境
 
@@ -34,7 +34,7 @@ Awesome backbones for image classification
 ## 资料
 |数据集|视频教程|人工智能技术探讨群|
 |---|---|---|
-|[`花卉数据集` 提取码：0zat](https://pan.baidu.com/s/1137y4l-J3AgyCiC_cXqIqw)|[点我跳转](https://www.bilibili.com/video/BV1SY411P7Nd)|[1群：78174903](https://jq.qq.com/?_wv=1027&k=lY5KVICA)<br/>[2群：571218304](https://jq.qq.com/?_wv=1027&k=ZCDCT3xV)<br/>[3群：584723646](https://jq.qq.com/?_wv=1027&k=bakez5Yz)
+|[`花卉数据集` 提取码：0zat](https://pan.baidu.com/s/1137y4l-J3AgyCiC_cXqIqw)|[点我跳转](https://www.bilibili.com/video/BV1SY411P7Nd)|[1群：78174903](https://jq.qq.com/?_wv=1027&k=lY5KVICA)<br/>[3群：584723646](https://jq.qq.com/?_wv=1027&k=bakez5Yz)
 
 
 ## 教程
