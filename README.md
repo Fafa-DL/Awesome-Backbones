@@ -43,6 +43,7 @@ Awesome backbones for image classification
 - [配置文件解释](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Configs_description.md)
 - [训练](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
 - [模型评估](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_eval.md)
+- [计算Flops&Params](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
 - [添加新的模型组件](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Add_modules.md)
 - [类别激活图可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/CAM_visualization.md)
 - [学习率策略可视化](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Lr_visualization.md)

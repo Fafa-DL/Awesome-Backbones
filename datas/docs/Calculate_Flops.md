@@ -7,7 +7,7 @@
 **命令行**：
 
 ```bash
-python tools/vis_lr.py \
+python tools/get_flops.py \
     ${CONFIG_FILE} \
     [--shape ${Shape}] \
 ```
