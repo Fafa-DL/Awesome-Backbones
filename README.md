@@ -16,15 +16,17 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.08.24`** : 
-- 新增批量图片检测功能，tools/batch_test.py
-
 **`2022.09.01`** 
 - 新增全类别**ROC Curve**评价指标
 - 新增全类别**P-R Curve**、**Average Precision(AP)值**评价指标
 
 **`2022.09.09`** 
 - 新增计算模型参数量Parameters与浮点运算量Flops功能，详见[Calculate Flops](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
+
+**`2022.09.13`** 
+- 新增可视化数据增强pipeline功能，详见[Pipeline visualization](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Pipeline_visualization.md)
+- 很有必要预览整个数据集的数据增强结果，如果遮挡/变形失真的图片比例`占据较多`，很有可能导致准确率下降，因为其主导了训练loss走向!
+- ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail01.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail02.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail01.jpg)
 
 ## 测试环境
 
