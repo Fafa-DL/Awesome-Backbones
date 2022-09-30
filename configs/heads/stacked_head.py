@@ -95,7 +95,7 @@ class StackedLinearClsHead(ClsHead):
                     hidden_channels,
                     dropout_rate=self.dropout_rate,
                     norm_cfg=self.norm_cfg,
-                    act_cfg=self.act_cfg))
+                    act_cfg=copy.deepcopy(self.act_cfg)))
             in_channels = hidden_channels
 
         self.layers.append(
@@ -115,7 +115,6 @@ class StackedLinearClsHead(ClsHead):
         for layer in self.layers[:-1]:
             x = layer(x)
         return x
-    
     
     def fc(self,x):
         return self.layers[-1](x)
