@@ -1,7 +1,7 @@
 # model settings
 
 model_cfg = dict(
-    backbone=dict(type='AlexNet', num_classes=5),
+    backbone=dict(type='AlexNet', num_classes=1000),
     neck=None,
     head=dict(
         type='ClsHead',

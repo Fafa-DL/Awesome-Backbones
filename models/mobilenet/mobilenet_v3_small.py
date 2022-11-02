@@ -5,7 +5,7 @@ model_cfg = dict(
     neck=dict(type='GlobalAveragePooling'),
     head=dict(
         type='StackedLinearClsHead',
-        num_classes=5,
+        num_classes=1000,
         in_channels=576,
         mid_channels=[1024],
         dropout_rate=0.2,
