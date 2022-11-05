@@ -51,13 +51,13 @@ data_cfg = dict(
     num_workers = 2,
     train = dict(
         pretrained_flag = True,
-        pretrained_weights = 'datas/mobilenet_v3_small.pth',
+        pretrained_weights = 'datas/mobilenet_v3_small-8427ecf0.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),
         epoches = 100,
     ),
     test=dict(
-        ckpt = 'logs/MobileNetV3/2022-08-04-12-15-04/Val_Epoch096-Acc92.898.pth',
+        ckpt = 'datas/mobilenet_v3_small-8427ecf0.pth',
         metrics = ['accuracy', 'precision', 'recall', 'f1_score', 'confusion'],
         metric_options = dict(
             topk = (1,5),

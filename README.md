@@ -16,28 +16,34 @@ Awesome backbones for image classification
 
 ## 更新日志
 
-**`2022.09.01`** 
-- 新增全类别**ROC Curve**评价指标
-- 新增全类别**P-R Curve**、**Average Precision(AP)值**评价指标
-
-**`2022.09.09`** 
-- 新增计算模型参数量Parameters与浮点运算量Flops功能，详见[Calculate Flops](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
-
 **`2022.09.13`** 
 - 新增可视化数据增强pipeline功能，详见[Pipeline visualization](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Pipeline_visualization.md)
 - 很有必要预览整个数据集的数据增强结果，如果遮挡/变形失真的图片比例`占据较多`，很有可能导致准确率下降，因为其主导了训练loss走向!
 - ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail01.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail02.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail03.jpg)
 
+**`2022.09.09`** 
+- 新增计算模型参数量Parameters与浮点运算量Flops功能，详见[Calculate Flops](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
+
+**`2022.09.01`** 
+- 新增全类别**ROC Curve**评价指标
+- 新增全类别**P-R Curve**、**Average Precision(AP)值**评价指标
+
 ## 测试环境
 
-- Pytorch      1.7.1
-- Python       3.6
+- Pytorch      1.7.1+
+- Python       3.6+
 
 ## 资料
 |数据集|视频教程|人工智能技术探讨群|
 |---|---|---|
 |[`花卉数据集` 提取码：0zat](https://pan.baidu.com/s/1137y4l-J3AgyCiC_cXqIqw)|[点我跳转](https://www.bilibili.com/video/BV1SY411P7Nd)|[1群：78174903](https://jq.qq.com/?_wv=1027&k=lY5KVICA)<br/>[3群：584723646](https://jq.qq.com/?_wv=1027&k=bakez5Yz)
 
+## 快速开始
+```
+1. 遵循[环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)完成配置
+2. 下载[MobileNetV3-Small](https://download.openmmlab.com/mmclassification/v0/mobilenet_v3/convert/mobilenet_v3_small-8427ecf0.pth)权重至**datas/**下
+3. python tools/single_test.py datas/cat-dog.png models/mobilenet/mobilenet_v3_small.py --classes-map datas/imageNet1kAnnotation.txt
+```
 
 ## 教程
 - [环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)
