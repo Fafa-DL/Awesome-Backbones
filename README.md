@@ -40,9 +40,12 @@ Awesome backbones for image classification
 
 ## 快速开始
 
-1. 遵循[环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)完成配置
-2. 下载[MobileNetV3-Small](https://download.openmmlab.com/mmclassification/v0/mobilenet_v3/convert/mobilenet_v3_small-8427ecf0.pth)权重至**datas/**下
-3. python tools/single_test.py datas/cat-dog.png models/mobilenet/mobilenet_v3_small.py --classes-map datas/imageNet1kAnnotation.txt
+- 遵循[环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)完成配置
+- 下载[MobileNetV3-Small](https://download.openmmlab.com/mmclassification/v0/mobilenet_v3/convert/mobilenet_v3_small-8427ecf0.pth)权重至**datas**下
+- **Awesome-Backbones**文件夹下终端输入
+```bash
+python tools/single_test.py datas/cat-dog.png models/mobilenet/mobilenet_v3_small.py --classes-map datas/imageNet1kAnnotation.txt
+```
 
 ## 教程
 - [环境搭建](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Environment_setting.md)
