@@ -11,19 +11,18 @@ from ..common.transformer import FFN, PatchEmbed, PatchMerging
 from core.initialize.weight_init import trunc_normal_
 from ..common.base_module import BaseModule, ModuleList
 from torch.nn.modules.batchnorm import _BatchNorm
-
-from ..common import ShiftWindowMSA, resize_pos_embed, to_2tuple
-
+from ..common import ShiftWindowMSA, resize_pos_embed, to_2tuple, WindowMSAV2
 
 
-class SwinBlock(BaseModule):
-    """Swin Transformer block.
+class SwinBlockV2(BaseModule):
+    """Swin Transformer V2 block. Use post normalization.
 
     Args:
         embed_dims (int): Number of input channels.
         num_heads (int): Number of attention heads.
         window_size (int): The height and width of the window. Defaults to 7.
         shift (bool): Shift the attention window or not. Defaults to False.
+        extra_norm (bool): Whether add extra norm at the end of main branch.
         ffn_ratio (float): The expansion ratio of feedforward network hidden
             layer channels. Defaults to 4.
         drop_path (float): The drop path rate after attention and ffn.
@@ -40,6 +39,7 @@ class SwinBlock(BaseModule):
             Defaults to ``dict(type='LN')``.
         with_cp (bool): Use checkpoint or not. Using checkpoint will save some
             memory while slowing down the training speed. Defaults to False.
+        pretrained_window_size (int): Window size in pretrained.
         init_cfg (dict, optional): The extra config for initialization.
             Defaults to None.
     """
@@ -47,8 +47,9 @@ class SwinBlock(BaseModule):
     def __init__(self,
                  embed_dims,
                  num_heads,
-                 window_size=7,
+                 window_size=8,
                  shift=False,
+                 extra_norm=False,
                  ffn_ratio=4.,
                  drop_path=0.,
                  pad_small_map=False,
@@ -56,10 +57,12 @@ class SwinBlock(BaseModule):
                  ffn_cfgs=dict(),
                  norm_cfg=dict(type='LN'),
                  with_cp=False,
+                 pretrained_window_size=0,
                  init_cfg=None):
 
-        super(SwinBlock, self).__init__(init_cfg)
+        super(SwinBlockV2, self).__init__(init_cfg)
         self.with_cp = with_cp
+        self.extra_norm = extra_norm
 
         _attn_cfgs = {
             'embed_dims': embed_dims,
@@ -70,8 +73,13 @@ class SwinBlock(BaseModule):
             'pad_small_map': pad_small_map,
             **attn_cfgs
         }
-        self.norm1 = build_norm_layer(norm_cfg, embed_dims)[1]
+        # use V2 attention implementation
+        _attn_cfgs.update(
+            window_msa=WindowMSAV2,
+            msa_cfg=dict(
+                pretrained_window_size=to_2tuple(pretrained_window_size)))
         self.attn = ShiftWindowMSA(**_attn_cfgs)
+        self.norm1 = build_norm_layer(norm_cfg, embed_dims)[1]
 
         _ffn_cfgs = {
             'embed_dims': embed_dims,
@@ -80,22 +88,32 @@ class SwinBlock(BaseModule):
             'ffn_drop': 0,
             'dropout_layer': dict(type='DropPath', drop_prob=drop_path),
             'act_cfg': dict(type='GELU'),
+            'add_identity': False,
             **ffn_cfgs
         }
-        self.norm2 = build_norm_layer(norm_cfg, embed_dims)[1]
         self.ffn = FFN(**_ffn_cfgs)
+        self.norm2 = build_norm_layer(norm_cfg, embed_dims)[1]
+
+        # add extra norm for every n blocks in huge and giant model
+        if self.extra_norm:
+            self.norm3 = build_norm_layer(norm_cfg, embed_dims)[1]
 
     def forward(self, x, hw_shape):
 
         def _inner_forward(x):
+            # Use post normalization
             identity = x
-            x = self.norm1(x)
             x = self.attn(x, hw_shape)
+            x = self.norm1(x)
             x = x + identity
 
             identity = x
+            x = self.ffn(x)
             x = self.norm2(x)
-            x = self.ffn(x, identity=identity)
+            x = x + identity
+
+            if self.extra_norm:
+                x = self.norm3(x)
 
             return x
 
@@ -107,7 +125,7 @@ class SwinBlock(BaseModule):
         return x
 
 
-class SwinBlockSequence(BaseModule):
+class SwinBlockV2Sequence(BaseModule):
     """Module with successive Swin Transformer blocks and downsample layer.
 
     Args:
@@ -130,6 +148,10 @@ class SwinBlockSequence(BaseModule):
             avoid shifting window and shrink the window size to the size of
             feature map, which is common used in classification.
             Defaults to False.
+        extra_norm_every_n_blocks (int): Add extra norm at the end of main
+            branch every n blocks. Defaults to 0, which means no needs for
+            extra norm layer.
+        pretrained_window_size (int): Window size in pretrained.
         init_cfg (dict, optional): The extra config for initialization.
             Defaults to None.
     """
@@ -138,13 +160,15 @@ class SwinBlockSequence(BaseModule):
                  embed_dims,
                  depth,
                  num_heads,
-                 window_size=7,
+                 window_size=8,
                  downsample=False,
                  downsample_cfg=dict(),
                  drop_paths=0.,
                  block_cfgs=dict(),
                  with_cp=False,
                  pad_small_map=False,
+                 extra_norm_every_n_blocks=0,
+                 pretrained_window_size=0,
                  init_cfg=None):
         super().__init__(init_cfg)
 
@@ -154,57 +178,56 @@ class SwinBlockSequence(BaseModule):
         if not isinstance(block_cfgs, Sequence):
             block_cfgs = [deepcopy(block_cfgs) for _ in range(depth)]
 
-        self.embed_dims = embed_dims
-        self.blocks = ModuleList()
-        for i in range(depth):
-            _block_cfg = {
-                'embed_dims': embed_dims,
-                'num_heads': num_heads,
-                'window_size': window_size,
-                'shift': False if i % 2 == 0 else True,
-                'drop_path': drop_paths[i],
-                'with_cp': with_cp,
-                'pad_small_map': pad_small_map,
-                **block_cfgs[i]
-            }
-            block = SwinBlock(**_block_cfg)
-            self.blocks.append(block)
-
         if downsample:
+            self.out_channels = 2 * embed_dims
             _downsample_cfg = {
                 'in_channels': embed_dims,
-                'out_channels': 2 * embed_dims,
+                'out_channels': self.out_channels,
                 'norm_cfg': dict(type='LN'),
                 **downsample_cfg
             }
             self.downsample = PatchMerging(**_downsample_cfg)
         else:
+            self.out_channels = embed_dims
             self.downsample = None
 
-    def forward(self, x, in_shape):
-        for block in self.blocks:
-            x = block(x, in_shape)
+        self.blocks = ModuleList()
+        for i in range(depth):
+            extra_norm = True if extra_norm_every_n_blocks and \
+                (i + 1) % extra_norm_every_n_blocks == 0 else False
+            _block_cfg = {
+                'embed_dims': self.out_channels,
+                'num_heads': num_heads,
+                'window_size': window_size,
+                'shift': False if i % 2 == 0 else True,
+                'extra_norm': extra_norm,
+                'drop_path': drop_paths[i],
+                'with_cp': with_cp,
+                'pad_small_map': pad_small_map,
+                'pretrained_window_size': pretrained_window_size,
+                **block_cfgs[i]
+            }
+            block = SwinBlockV2(**_block_cfg)
+            self.blocks.append(block)
 
+    def forward(self, x, in_shape):
         if self.downsample:
             x, out_shape = self.downsample(x, in_shape)
         else:
             out_shape = in_shape
+
+        for block in self.blocks:
+            x = block(x, out_shape)
+
         return x, out_shape
 
-    @property
-    def out_channels(self):
-        if self.downsample:
-            return self.downsample.out_channels
-        else:
-            return self.embed_dims
 
+class SwinTransformerV2(BaseModule):
+    """Swin Transformer V2.
 
-class SwinTransformer(BaseModule):
-    """Swin Transformer.
-
-    A PyTorch implement of : `Swin Transformer:
-    Hierarchical Vision Transformer using Shifted Windows
-    <https://arxiv.org/abs/2103.14030>`_
+    A PyTorch implement of : `Swin Transformer V2:
+    Scaling Up Capacity and Resolution
+    <https://arxiv.org/abs/2111.09883>`_
 
     Inspiration from
     https://github.com/microsoft/Swin-Transformer
@@ -218,6 +241,8 @@ class SwinTransformer(BaseModule):
             - **depths** (List[int]): The number of blocks in each stage.
             - **num_heads** (List[int]): The number of heads in attention
               modules of each stage.
+            - **extra_norm_every_n_blocks** (int): Add extra norm at the end
+            of main branch every n blocks.
 
             Defaults to 'tiny'.
         img_size (int | tuple): The expected input image shape. Because we
@@ -226,7 +251,8 @@ class SwinTransformer(BaseModule):
         patch_size (int | tuple): The patch size in patch embedding.
             Defaults to 4.
         in_channels (int): The num of input channels. Defaults to 3.
-        window_size (int): The height and width of the window. Defaults to 7.
+        window_size (int | Sequence): The height and width of the window.
+            Defaults to 7.
         drop_rate (float): Dropout rate after embedding. Defaults to 0.
         drop_path_rate (float): Stochastic depth rate. Defaults to 0.1.
         use_abs_pos_embed (bool): If True, add absolute position embedding to
@@ -251,17 +277,19 @@ class SwinTransformer(BaseModule):
             stage. Defaults to an empty dict.
         patch_cfg (dict): Extra config dict for patch embedding.
             Defaults to an empty dict.
+        pretrained_window_sizes (tuple(int)): Pretrained window sizes of
+            each layer.
         init_cfg (dict, optional): The Config for initialization.
             Defaults to None.
 
     Examples:
-        >>> from mmcls.models import SwinTransformer
+        >>> from mmcls.models import SwinTransformerV2
         >>> import torch
         >>> extra_config = dict(
         >>>     arch='tiny',
         >>>     stage_cfgs=dict(downsample_cfg={'kernel_size': 3,
-        >>>                                     'expansion_ratio': 3}))
-        >>> self = SwinTransformer(**extra_config)
+        >>>                                     'padding': 'same'}))
+        >>> self = SwinTransformerV2(**extra_config)
         >>> inputs = torch.rand(1, 3, 224, 224)
         >>> output = self.forward(inputs)
         >>> print(output.shape)
@@ -271,30 +299,46 @@ class SwinTransformer(BaseModule):
         **dict.fromkeys(['t', 'tiny'],
                         {'embed_dims': 96,
                          'depths':     [2, 2,  6,  2],
-                         'num_heads':  [3, 6, 12, 24]}),
+                         'num_heads':  [3, 6, 12, 24],
+                         'extra_norm_every_n_blocks': 0}),
         **dict.fromkeys(['s', 'small'],
                         {'embed_dims': 96,
                          'depths':     [2, 2, 18,  2],
-                         'num_heads':  [3, 6, 12, 24]}),
+                         'num_heads':  [3, 6, 12, 24],
+                         'extra_norm_every_n_blocks': 0}),
         **dict.fromkeys(['b', 'base'],
                         {'embed_dims': 128,
                          'depths':     [2, 2, 18,  2],
-                         'num_heads':  [4, 8, 16, 32]}),
+                         'num_heads':  [4, 8, 16, 32],
+                         'extra_norm_every_n_blocks': 0}),
         **dict.fromkeys(['l', 'large'],
                         {'embed_dims': 192,
                          'depths':     [2,  2, 18,  2],
-                         'num_heads':  [6, 12, 24, 48]}),
+                         'num_heads':  [6, 12, 24, 48],
+                         'extra_norm_every_n_blocks': 0}),
+        # head count not certain for huge, and is employed for another
+        # parallel study about self-supervised learning.
+        **dict.fromkeys(['h', 'huge'],
+                        {'embed_dims': 352,
+                         'depths':     [2,  2, 18,  2],
+                         'num_heads':  [8, 16, 32, 64],
+                         'extra_norm_every_n_blocks': 6}),
+        **dict.fromkeys(['g', 'giant'],
+                        {'embed_dims': 512,
+                         'depths':     [2,  2, 42,  4],
+                         'num_heads':  [16, 32, 64, 128],
+                         'extra_norm_every_n_blocks': 6}),
     }  # yapf: disable
 
-    _version = 3
+    _version = 1
     num_extra_tokens = 0
 
     def __init__(self,
                  arch='tiny',
-                 img_size=224,
+                 img_size=256,
                  patch_size=4,
                  in_channels=3,
-                 window_size=7,
+                 window_size=8,
                  drop_rate=0.,
                  drop_path_rate=0.1,
                  out_indices=(3, ),
@@ -305,10 +349,11 @@ class SwinTransformer(BaseModule):
                  norm_eval=False,
                  pad_small_map=False,
                  norm_cfg=dict(type='LN'),
-                 stage_cfgs=dict(),
+                 stage_cfgs=dict(downsample_cfg=dict(is_post_norm=True)),
                  patch_cfg=dict(),
+                 pretrained_window_sizes=[0, 0, 0, 0],
                  init_cfg=None):
-        super(SwinTransformer, self).__init__(init_cfg=init_cfg)
+        super(SwinTransformerV2, self).__init__(init_cfg=init_cfg)
 
         if isinstance(arch, str):
             arch = arch.lower()
@@ -316,7 +361,10 @@ class SwinTransformer(BaseModule):
                 f'Arch {arch} is not in default archs {set(self.arch_zoo)}'
             self.arch_settings = self.arch_zoo[arch]
         else:
-            essential_keys = {'embed_dims', 'depths', 'num_heads'}
+            essential_keys = {
+                'embed_dims', 'depths', 'num_heads',
+                'extra_norm_every_n_blocks'
+            }
             assert isinstance(arch, dict) and set(arch) == essential_keys, \
                 f'Custom arch needs a dict with keys {essential_keys}'
             self.arch_settings = arch
@@ -324,11 +372,23 @@ class SwinTransformer(BaseModule):
         self.embed_dims = self.arch_settings['embed_dims']
         self.depths = self.arch_settings['depths']
         self.num_heads = self.arch_settings['num_heads']
+        self.extra_norm_every_n_blocks = self.arch_settings[
+            'extra_norm_every_n_blocks']
         self.num_layers = len(self.depths)
         self.out_indices = out_indices
         self.use_abs_pos_embed = use_abs_pos_embed
         self.interpolate_mode = interpolate_mode
         self.frozen_stages = frozen_stages
+
+        if isinstance(window_size, int):
+            self.window_sizes = [window_size for _ in range(self.num_layers)]
+        elif isinstance(window_size, Sequence):
+            assert len(window_size) == self.num_layers, \
+                f'Length of window_sizes {len(window_size)} is not equal to '\
+                f'length of stages {self.num_layers}.'
+            self.window_sizes = window_size
+        else:
+            raise TypeError('window_size should be a Sequence or int.')
 
         _patch_cfg = dict(
             in_channels=in_channels,
@@ -350,6 +410,8 @@ class SwinTransformer(BaseModule):
             self._register_load_state_dict_pre_hook(
                 self._prepare_abs_pos_embed)
 
+        self._register_load_state_dict_pre_hook(self._delete_reinit_params)
+
         self.drop_after_pos = nn.Dropout(p=drop_rate)
         self.norm_eval = norm_eval
 
@@ -367,20 +429,22 @@ class SwinTransformer(BaseModule):
                 stage_cfg = stage_cfgs[i]
             else:
                 stage_cfg = deepcopy(stage_cfgs)
-            downsample = True if i < self.num_layers - 1 else False
+            downsample = True if i > 0 else False
             _stage_cfg = {
                 'embed_dims': embed_dims[-1],
                 'depth': depth,
                 'num_heads': num_heads,
-                'window_size': window_size,
+                'window_size': self.window_sizes[i],
                 'downsample': downsample,
                 'drop_paths': dpr[:depth],
                 'with_cp': with_cp,
                 'pad_small_map': pad_small_map,
+                'extra_norm_every_n_blocks': self.extra_norm_every_n_blocks,
+                'pretrained_window_size': pretrained_window_sizes[i],
                 **stage_cfg
             }
 
-            stage = SwinBlockSequence(**_stage_cfg)
+            stage = SwinBlockV2Sequence(**_stage_cfg)
             self.stages.append(stage)
 
             dpr = dpr[depth:]
@@ -395,7 +459,7 @@ class SwinTransformer(BaseModule):
             self.add_module(f'norm{i}', norm_layer)
 
     def init_weights(self):
-        super(SwinTransformer, self).init_weights()
+        super(SwinTransformerV2, self).init_weights()
 
         if (isinstance(self.init_cfg, dict)
                 and self.init_cfg['type'] == 'Pretrained'):
@@ -407,6 +471,7 @@ class SwinTransformer(BaseModule):
 
     def forward(self, x):
         x, hw_shape = self.patch_embed(x)
+
         if self.use_abs_pos_embed:
             x = x + resize_pos_embed(
                 self.absolute_pos_embed, self.patch_resolution, hw_shape,
@@ -426,30 +491,6 @@ class SwinTransformer(BaseModule):
 
         return tuple(outs)
 
-    def _load_from_state_dict(self, state_dict, prefix, local_metadata, *args,
-                              **kwargs):
-        """load checkpoints."""
-        # Names of some parameters in has been changed.
-        version = local_metadata.get('version', None)
-        if (version is None
-                or version < 2) and self.__class__ is SwinTransformer:
-            final_stage_num = len(self.stages) - 1
-            state_dict_keys = list(state_dict.keys())
-            for k in state_dict_keys:
-                if k.startswith('norm.') or k.startswith('backbone.norm.'):
-                    convert_key = k.replace('norm.', f'norm{final_stage_num}.')
-                    state_dict[convert_key] = state_dict[k]
-                    del state_dict[k]
-        if (version is None
-                or version < 3) and self.__class__ is SwinTransformer:
-            state_dict_keys = list(state_dict.keys())
-            for k in state_dict_keys:
-                if 'attn_mask' in k:
-                    del state_dict[k]
-
-        super()._load_from_state_dict(state_dict, prefix, local_metadata,
-                                      *args, **kwargs)
-
     def _freeze_stages(self):
         if self.frozen_stages >= 0:
             self.patch_embed.eval()
@@ -467,7 +508,7 @@ class SwinTransformer(BaseModule):
                     param.requires_grad = False
 
     def train(self, mode=True):
-        super(SwinTransformer, self).train(mode)
+        super(SwinTransformerV2, self).train(mode)
         self._freeze_stages()
         if mode and self.norm_eval:
             for m in self.modules():
@@ -492,3 +533,18 @@ class SwinTransformer(BaseModule):
                                                 pos_embed_shape,
                                                 self.interpolate_mode,
                                                 self.num_extra_tokens)
+
+    def _delete_reinit_params(self, state_dict, prefix, *args, **kwargs):
+        # delete relative_position_index since we always re-init it
+        relative_position_index_keys = [
+            k for k in state_dict.keys() if 'relative_position_index' in k
+        ]
+        for k in relative_position_index_keys:
+            del state_dict[k]
+
+        # delete relative_coords_table since we always re-init it
+        relative_position_index_keys = [
+            k for k in state_dict.keys() if 'relative_coords_table' in k
+        ]
+        for k in relative_position_index_keys:
+            del state_dict[k]

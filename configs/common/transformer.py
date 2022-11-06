@@ -226,7 +226,9 @@ class PatchEmbed(BaseModule):
         return x, out_size
 
 class PatchMerging(BaseModule):
-    """Merge patch feature map.
+    """Merge patch feature map. Modified from mmcv, which uses pre-norm layer
+    whereas Swin V2 uses post-norm here. Therefore, add extra parameter to
+    decide whether use post-norm or not.
 
     This layer groups feature map by kernel_size, and applies norm and linear
     layers to the grouped feature map ((used in Swin Transformer)).
@@ -242,19 +244,21 @@ class PatchMerging(BaseModule):
         kernel_size (int | tuple, optional): the kernel size in the unfold
             layer. Defaults to 2.
         stride (int | tuple, optional): the stride of the sliding blocks in the
-            unfold layer. Default: None. (Would be set as `kernel_size`)
+            unfold layer. Defaults to None. (Would be set as `kernel_size`)
         padding (int | tuple | string ): The padding length of
             embedding conv. When it is a string, it means the mode
             of adaptive padding, support "same" and "corner" now.
-            Default: "corner".
+            Defaults to "corner".
         dilation (int | tuple, optional): dilation parameter in the unfold
             layer. Default: 1.
         bias (bool, optional): Whether to add bias in linear layer or not.
-            Defaults: False.
+            Defaults to False.
         norm_cfg (dict, optional): Config dict for normalization layer.
-            Default: dict(type='LN').
+            Defaults to dict(type='LN').
+        is_post_norm (bool): Whether to use post normalization here.
+            Defaults to False.
         init_cfg (dict, optional): The extra config for initialization.
-            Default: None.
+            Defaults to None.
     """
 
     def __init__(self,
@@ -266,10 +270,13 @@ class PatchMerging(BaseModule):
                  dilation=1,
                  bias=False,
                  norm_cfg=dict(type='LN'),
+                 is_post_norm=False,
                  init_cfg=None):
         super().__init__(init_cfg=init_cfg)
         self.in_channels = in_channels
         self.out_channels = out_channels
+        self.is_post_norm = is_post_norm
+
         if stride:
             stride = stride
         else:
@@ -299,12 +306,16 @@ class PatchMerging(BaseModule):
 
         sample_dim = kernel_size[0] * kernel_size[1] * in_channels
 
+        self.reduction = nn.Linear(sample_dim, out_channels, bias=bias)
+
         if norm_cfg is not None:
-            self.norm = build_norm_layer(norm_cfg, sample_dim)[1]
+            # build pre or post norm layer based on different channels
+            if self.is_post_norm:
+                self.norm = build_norm_layer(norm_cfg, out_channels)[1]
+            else:
+                self.norm = build_norm_layer(norm_cfg, sample_dim)[1]
         else:
             self.norm = None
-
-        self.reduction = nn.Linear(sample_dim, out_channels, bias=bias)
 
     def forward(self, x, input_size):
         """
@@ -349,8 +360,15 @@ class PatchMerging(BaseModule):
 
         output_size = (out_h, out_w)
         x = x.transpose(1, 2)  # B, H/2*W/2, 4*C
-        x = self.norm(x) if self.norm else x
-        x = self.reduction(x)
+
+        if self.is_post_norm:
+            # use post-norm here
+            x = self.reduction(x)
+            x = self.norm(x) if self.norm else x
+        else:
+            x = self.norm(x) if self.norm else x
+            x = self.reduction(x)
+
         return x, output_size
 
 class MultiheadAttention(BaseModule):
