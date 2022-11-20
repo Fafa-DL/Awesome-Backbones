@@ -16,6 +16,9 @@ Awesome backbones for image classification
 
 ## 更新日志
 
+**`2022.11.20`** 
+- 新增是否将测试集用作验证集选项，若不使用，从训练集按ratio划分验证集数量，随机从训练集某fold挑选作为验证集（类似k-fold但不是，可自己稍改达到k-fold目的），详见[Training tutorial](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
+
 **`2022.11.06`** 
 - 新增**HorNet**, **EfficientFormer**, **SwinTransformer V2**, **MViT**模型
 
@@ -23,9 +26,6 @@ Awesome backbones for image classification
 - 新增可视化数据增强pipeline功能，详见[Pipeline visualization](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Pipeline_visualization.md)
 - 很有必要预览整个数据集的数据增强结果，如果遮挡/变形失真的图片比例`占据较多`，很有可能导致准确率下降，因为其主导了训练loss走向!
 - ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail01.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail02.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail03.jpg)
-
-**`2022.09.09`** 
-- 新增计算模型参数量Parameters与浮点运算量Flops功能，详见[Calculate Flops](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/Calculate_Flops.md)
 
 ## 测试环境
 

@@ -6,6 +6,8 @@ import copy
 import argparse
 import shutil
 import time
+import numpy as np
+import random
 
 import torch
 # import torch.backends.cudnn as cudnn
@@ -33,6 +35,15 @@ def parse_args():
         help='id of gpu to use '
         '(only applicable to non-distributed training)')
     parser.add_argument(
+        '--split-validation',
+        action='store_true',
+        help='whether to split validation set from training set.')
+    parser.add_argument(
+        '--ratio',
+        type=float,
+        default=0.2,
+        help='the proportion of the validation set to the training set.')
+    parser.add_argument(
         '--deterministic',
         action='store_true',
         help='whether to set deterministic options for CUDNN backend.')
@@ -54,18 +65,33 @@ def main():
     save_dir = os.path.join('logs',model_cfg.get('backbone').get('type'),dirname)
     meta['save_dir'] = save_dir
     
-    # 读取训练&测试标签数据
-    train_annotations   = "datas/train.txt"
-    test_annotations    = 'datas/test.txt'
-    with open(train_annotations, encoding='utf-8') as f:
-        train_datas = f.readlines()
-    with open(test_annotations, encoding='utf-8') as f:
-        val_datas   = f.readlines()
-    
     # 设置随机数种子
     seed = init_random_seed(args.seed)
     set_random_seed(seed, deterministic=args.deterministic)
     meta['seed'] = seed
+    
+    # 读取训练&制作验证标签数据
+    total_annotations   = "datas/train.txt"
+    with open(total_annotations, encoding='utf-8') as f:
+        total_datas = f.readlines()
+    if args.split_validation:
+        total_nums = len(total_datas)
+        # indices = list(range(total_nums))
+        if isinstance(seed, int):
+            rng = np.random.default_rng(seed)
+            rng.shuffle(total_datas)
+        val_nums = int(total_nums * args.ratio)
+        folds = list(range(int(1.0 / args.ratio)))
+        fold = random.choice(folds)
+        val_start = val_nums * fold
+        val_end = val_nums * (fold + 1)
+        train_datas = total_datas[:val_start] + total_datas[val_end:]
+        val_datas = total_datas[val_start:val_end]
+    else:
+        train_datas = total_datas.copy()
+        test_annotations    = 'datas/test.txt'
+        with open(test_annotations, encoding='utf-8') as f:
+            val_datas   = f.readlines()
     
     # 初始化模型,详见https://www.bilibili.com/video/BV12a411772h
     if args.device is not None:

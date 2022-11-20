@@ -20,6 +20,8 @@ python tools/train.py \
     [--seed] \
     [--device] \
     [--gpu-id] \
+    [--split-validation] \
+    [--ratio] \
     [--deterministic] \
 ```
 
@@ -30,4 +32,6 @@ python tools/train.py \
 - `--seed`：设置随机数种子，默认按照环境设置
 - `--device`：设置GPU或CPU训练
 - `--gpu-id`：指定GPU设备，默认为0（单卡基本均为0不用改动）
+- `--split-validation`：是否从训练集中划分验证集，划分比例默认0.2，否则直接将测试集用于验证
+- `--ratio`：从训练集中划分验证集的比例，默认0.2，且shuffle后随机从训练集某fold挑选
 - `--deterministic`：多GPU训练相关，暂不用设置
