@@ -65,7 +65,7 @@ train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='RandomResizedCrop',
-        size=224,
+        size=384,
         backend='pillow',
         interpolation='bicubic'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
@@ -95,12 +95,7 @@ train_pipeline = [
 
 val_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(
-        type='Resize',
-        size=(256, -1),
-        backend='pillow',
-        interpolation='bicubic'),
-    dict(type='CenterCrop', crop_size=224),
+    dict(type='Resize', size=384, backend='pillow'),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='Collect', keys=['img'])

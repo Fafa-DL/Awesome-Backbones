@@ -1,26 +1,17 @@
-# model settings
+# Model settings
 model_cfg = dict(
     backbone=dict(
-        type='EfficientFormer',
-        arch='l1',
-        drop_path_rate=0,
-        init_cfg=[
-            dict(
-                type='TruncNormal',
-                layer=['Conv2d', 'Linear'],
-                std=.02,
-                bias=0.),
-            dict(type='Constant', layer=['GroupNorm'], val=1., bias=0.),
-            dict(type='Constant', layer=['LayerScale'], val=1e-5)
-        ]),
-    neck=dict(type='GlobalAveragePooling', dim=1),
+        type='DaViT', arch='t', out_indices=(3, ), drop_path_rate=0.1),
+    neck=dict(type='GlobalAveragePooling'),
     head=dict(
-        type='EfficientFormerClsHead', in_channels=448, num_classes=5))
-
+        type='LinearClsHead',
+        num_classes=1000,
+        in_channels=768,
+        loss=dict(
+            type='LabelSmoothLoss', label_smooth_val=0.1, mode='original')
+    ))
 
 # dataloader pipeline
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 rand_increasing_policies = [
@@ -67,7 +58,11 @@ rand_increasing_policies = [
 ]
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='RandomResizedCrop', size=224, backend='pillow'),
+    dict(
+        type='RandomResizedCrop',
+        size=224,
+        backend='pillow',
+        interpolation='bicubic'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
     dict(
         type='RandAugment',
@@ -92,11 +87,12 @@ train_pipeline = [
     dict(type='ToTensor', keys=['gt_label']),
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
+
 val_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='Resize',
-        size=(248, -1),
+        size=(256, -1),
         backend='pillow',
         interpolation='bicubic'),
     dict(type='CenterCrop', crop_size=224),
@@ -108,10 +104,10 @@ val_pipeline = [
 # train
 data_cfg = dict(
     batch_size = 16,
-    num_workers = 0,
+    num_workers = 4,
     train = dict(
         pretrained_flag = False,
-        pretrained_weights = '',
+        pretrained_weights = 'davit-tiny_3rdparty_in1k_20221116-700fdf7d.pth',
         freeze_flag = False,
         freeze_layers = ('backbone',),
         epoches = 100,
@@ -128,15 +124,15 @@ data_cfg = dict(
 )
 
 
-# batch 16
-# lr = 5e-4 * 16 / 64
+# batch 32
+# lr = 0.01 *32 /64
 # optimizer
 optimizer_cfg = dict(
     type='AdamW',
-    lr=5e-4 * 16 / 64,
+    lr=0.001 * 32 / 64,
     weight_decay=0.05,
     eps=1e-8,
-    betas=(0.9, 0.999))
+    betas=(0.9, 0.999),)
 
 # learning 
 lr_config = dict(
@@ -145,6 +141,5 @@ lr_config = dict(
     min_lr_ratio=1e-2,
     warmup='linear',
     warmup_ratio=1e-3,
-    warmup_iters=3,
-    warmup_by_epoch=True
-)
+    warmup_iters=20,
+    warmup_by_epoch=True)

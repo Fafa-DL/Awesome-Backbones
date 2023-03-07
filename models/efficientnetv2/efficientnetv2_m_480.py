@@ -1,26 +1,16 @@
-# model settings
+# Model settings
 model_cfg = dict(
-    backbone=dict(
-        type='EfficientFormer',
-        arch='l1',
-        drop_path_rate=0,
-        init_cfg=[
-            dict(
-                type='TruncNormal',
-                layer=['Conv2d', 'Linear'],
-                std=.02,
-                bias=0.),
-            dict(type='Constant', layer=['GroupNorm'], val=1., bias=0.),
-            dict(type='Constant', layer=['LayerScale'], val=1e-5)
-        ]),
-    neck=dict(type='GlobalAveragePooling', dim=1),
+    backbone=dict(type='EfficientNetV2', arch='m'),
+    neck=dict(type='GlobalAveragePooling'),
     head=dict(
-        type='EfficientFormerClsHead', in_channels=448, num_classes=5))
-
+        type='LinearClsHead',
+        num_classes=5,
+        in_channels=1280,
+        loss=dict(type='CrossEntropyLoss', loss_weight=1.0),
+        topk=(1, 5),
+    ))
 
 # dataloader pipeline
-img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 rand_increasing_policies = [
@@ -67,7 +57,11 @@ rand_increasing_policies = [
 ]
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='RandomResizedCrop', size=224, backend='pillow'),
+    dict(
+        type='RandomResizedCrop',
+        size=384,
+        efficientnet_style=True,
+        interpolation='bicubic'),
     dict(type='RandomFlip', flip_prob=0.5, direction='horizontal'),
     dict(
         type='RandAugment',
@@ -92,14 +86,14 @@ train_pipeline = [
     dict(type='ToTensor', keys=['gt_label']),
     dict(type='Collect', keys=['img', 'gt_label'])
 ]
+
 val_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
-        type='Resize',
-        size=(248, -1),
-        backend='pillow',
+        type='CenterCrop',
+        crop_size=480,
+        efficientnet_style=True,
         interpolation='bicubic'),
-    dict(type='CenterCrop', crop_size=224),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='ImageToTensor', keys=['img']),
     dict(type='Collect', keys=['img'])
@@ -107,8 +101,8 @@ val_pipeline = [
 
 # train
 data_cfg = dict(
-    batch_size = 16,
-    num_workers = 0,
+    batch_size = 32,
+    num_workers = 4,
     train = dict(
         pretrained_flag = False,
         pretrained_weights = '',
@@ -128,23 +122,15 @@ data_cfg = dict(
 )
 
 
-# batch 16
-# lr = 5e-4 * 16 / 64
+# batch 32
+# lr = 0.1 *32 /256
 # optimizer
 optimizer_cfg = dict(
-    type='AdamW',
-    lr=5e-4 * 16 / 64,
-    weight_decay=0.05,
-    eps=1e-8,
-    betas=(0.9, 0.999))
+    type='SGD',
+    lr=0.1 * 32/256,
+    momentum=0.9,
+    weight_decay=1e-4)
 
 # learning 
-lr_config = dict(
-    type='CosineAnnealingLrUpdater',
-    by_epoch=False,
-    min_lr_ratio=1e-2,
-    warmup='linear',
-    warmup_ratio=1e-3,
-    warmup_iters=3,
-    warmup_by_epoch=True
-)
+lr_config = dict(type='StepLrUpdater', step=2, gamma=0.973, by_epoch=True)
+#lr_config = dict(type='StepLrUpdater', warmup='linear', warmup_iters=500, warmup_ratio=0.25,step=[30,60,90])
