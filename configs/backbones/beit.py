@@ -5,7 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from ..basic.build_layer import build_norm_layer, build_dropout
-from mmcv.cnn.bricks.transformer import FFN, PatchEmbed
+from ..common.transformer import FFN, PatchEmbed
 from ..common.base_module import BaseModule, ModuleList
 
 from ..common import (BEiTAttention, resize_pos_embed,
