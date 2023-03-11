@@ -59,7 +59,7 @@ class EnhancedConvModule(ConvModule):
         super().__init__(*args, **kwargs)
         self.has_skip = has_skip
         if self.has_skip and (self.in_channels != self.out_channels
-                              or self.stride != (1, 1)):
+                              or (self.stride != (1, 1) and self.stride != 1)):
             raise ValueError('the stride must be 1 and the `in_channels` and'
                              ' `out_channels` must be the same , when '
                              '`has_skip` is True in `EnhancedConvModule` .')

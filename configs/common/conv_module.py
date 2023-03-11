@@ -78,6 +78,10 @@ class ConvModule(nn.Module):
         self.conv_cfg = copy.deepcopy(conv_cfg)
         self.norm_cfg = copy.deepcopy(norm_cfg)
         self.act_cfg = copy.deepcopy(act_cfg)
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
         self.inplace = inplace
         self.with_spectral_norm = with_spectral_norm
         self.with_explicit_padding = padding_mode not in official_padding_mode
