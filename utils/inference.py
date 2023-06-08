@@ -31,7 +31,7 @@ def init_model(model, data_cfg, device='cuda:0',mode='eval'):
     return model
 
 
-def inference_model(model, image, val_pipeline, classes_names):
+def inference_model(model, image, val_pipeline, classes_names,label_names):
     """Inference image(s) with the classifier.
 
     Args:
@@ -62,7 +62,7 @@ def inference_model(model, image, val_pipeline, classes_names):
         scores = model(image.to(device),return_loss=False)
         pred_score,pred_label = torch.max(scores, axis=1)
         result = {'pred_label': pred_label.item(), 'pred_score': float(pred_score)}
-    result['pred_class'] = classes_names[result['pred_label']]
+    result['pred_class'] = classes_names[label_names.index(result['pred_label'])]
     return result
 
 

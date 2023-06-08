@@ -24,7 +24,7 @@ def main():
     parser.add_argument('--show', action='store_true', help='Show video')
     args = parser.parse_args()
 
-    classes_names, _ = get_info(args.classes_map)
+    classes_names,label_names = get_info(args.classes_map)
     # build the model from a config file and a checkpoint file
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
     if args.device is not None:
@@ -49,7 +49,7 @@ def main():
         if not flag:
             break
         # get single test results
-        result = inference_model(model, frame, val_pipeline, classes_names)
+        result = inference_model(model, frame, val_pipeline, classes_names,label_names)
         # put the results to img
         img = imshow_infos(frame, result,show = False)
 

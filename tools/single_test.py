@@ -21,7 +21,7 @@ def main():
         help='The path to save prediction image, default not to save.')
     args = parser.parse_args()
 
-    classes_names, _ = get_info(args.classes_map)
+    classes_names, label_names = get_info(args.classes_map)
     # build the model from a config file and a checkpoint file
     model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
     if args.device is not None:
@@ -33,7 +33,7 @@ def main():
     model = init_model(model, data_cfg, device=device, mode='eval')
     
     # test a single image
-    result = inference_model(model, args.img, val_pipeline, classes_names)
+    result = inference_model(model, args.img, val_pipeline, classes_names,label_names)
     # show the results
     show_result_pyplot(model, args.img, result, out_file=args.save_path)
 
