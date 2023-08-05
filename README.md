@@ -10,9 +10,29 @@ Awesome backbones for image classification
 ![](https://img.shields.io/badge/Python-%3E%3Dv3.6-yellowgreen)
 [![GitHub forks](https://img.shields.io/github/forks/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
 [![GitHub stars](https://img.shields.io/github/stars/Fafa-DL/Awesome-Backbones)](https://github.com/Fafa-DL/Awesome-Backbones)
-![Visitors](https://visitor-badge.glitch.me/badge?page_id=Fafa-DL.Awesome-Backbones&right_color=yellow)
 
 </div>
+
+## 写在前面
+- 若训练效果不佳，首先需要调整学习率和Batch size，这俩超参很大程度上影响收敛。其次，从关闭图像增强手段（尤其小数据集）开始，有的图像增强方法会污染数据，如
+![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail01.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail02.jpg) ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/fail03.jpg)
+
+&emsp;&emsp;如何去除增强？如[efficientnetv2-b0](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/models/efficientnetv2/efficientnetv2_b0.py)配置文件中train_pipeline可更改为如下
+```yaml
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(
+        type='RandomResizedCrop',
+        size=192,
+        efficientnet_style=True,
+        interpolation='bicubic'),
+    dict(type='Normalize', **img_norm_cfg),
+    dict(type='ImageToTensor', keys=['img']),
+    dict(type='ToTensor', keys=['gt_label']),
+    dict(type='Collect', keys=['img', 'gt_label'])
+]
+```
+&emsp;&emsp;若你的数据集提前已经将shape更改为网络要求的尺寸，那么`Resize`操作也可以去除。
 
 ## 更新日志
 
