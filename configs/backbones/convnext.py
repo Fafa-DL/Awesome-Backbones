@@ -6,6 +6,7 @@ from typing import Sequence
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.utils.checkpoint as cp
 from ..basic.build_layer import  build_activation_layer, build_norm_layer
 from ..basic.normalization import LayerNorm2d
 from ..common import BaseModule, ModuleList, Sequential
@@ -18,6 +19,8 @@ class ConvNeXtBlock(BaseModule):
 
     Args:
         in_channels (int): The number of input channels.
+        dw_conv_cfg (dict): Config of depthwise convolution.
+            Defaults to ``dict(kernel_size=7, padding=3)``.
         norm_cfg (dict): The config dict for norm layers.
             Defaults to ``dict(type='LN2d', eps=1e-6)``.
         act_cfg (dict): The config dict for activation between pointwise
@@ -45,19 +48,19 @@ class ConvNeXtBlock(BaseModule):
 
     def __init__(self,
                  in_channels,
+                 dw_conv_cfg=dict(kernel_size=7, padding=3),
                  norm_cfg=dict(type='LN2d', eps=1e-6),
                  act_cfg=dict(type='GELU'),
                  mlp_ratio=4.,
                  linear_pw_conv=True,
                  drop_path_rate=0.,
-                 layer_scale_init_value=1e-6):
+                 layer_scale_init_value=1e-6,
+                 with_cp=False):
         super().__init__()
+        self.with_cp = with_cp
+
         self.depthwise_conv = nn.Conv2d(
-            in_channels,
-            in_channels,
-            kernel_size=7,
-            padding=3,
-            groups=in_channels)
+            in_channels, in_channels, groups=in_channels, **dw_conv_cfg)
 
         self.linear_pw_conv = linear_pw_conv
         self.norm = build_norm_layer(norm_cfg, in_channels)[1]
@@ -81,24 +84,32 @@ class ConvNeXtBlock(BaseModule):
             drop_path_rate) if drop_path_rate > 0. else nn.Identity()
 
     def forward(self, x):
-        shortcut = x
-        x = self.depthwise_conv(x)
-        x = self.norm(x)
 
-        if self.linear_pw_conv:
-            x = x.permute(0, 2, 3, 1)  # (N, C, H, W) -> (N, H, W, C)
+        def _inner_forward(x):
+            shortcut = x
+            x = self.depthwise_conv(x)
 
-        x = self.pointwise_conv1(x)
-        x = self.act(x)
-        x = self.pointwise_conv2(x)
+            if self.linear_pw_conv:
+                x = x.permute(0, 2, 3, 1)  # (N, C, H, W) -> (N, H, W, C)
+            x = self.norm(x, data_format='channel_last')
 
-        if self.linear_pw_conv:
-            x = x.permute(0, 3, 1, 2)  # permute back
+            x = self.pointwise_conv1(x)
+            x = self.act(x)
+            x = self.pointwise_conv2(x)
 
-        if self.gamma is not None:
-            x = x.mul(self.gamma.view(1, -1, 1, 1))
+            if self.linear_pw_conv:
+                x = x.permute(0, 3, 1, 2)  # permute back
 
-        x = shortcut + self.drop_path(x)
+            if self.gamma is not None:
+                x = x.mul(self.gamma.view(1, -1, 1, 1))
+
+            x = shortcut + self.drop_path(x)
+            return x
+
+        if self.with_cp and x.requires_grad:
+            x = cp.checkpoint(_inner_forward, x)
+        else:
+            x = _inner_forward(x)
         return x
 
 

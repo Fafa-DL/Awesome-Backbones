@@ -38,6 +38,10 @@ from .replknet import RepLKNet
 from .beit import BEiT
 from .mixmim import MixMIMTransformer
 from .efficientnet_v2 import EfficientNetV2
+from .tinyvit import TinyViT
+from .deit3 import DeiT3
+from .edgenext import EdgeNeXt
+from .revvit import RevVisionTransformer
 
 
-__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer', 'TNT', 'MlpMixer', 'DistilledVisionTransformer', 'Conformer', 'T2T_ViT', 'PCPVT', 'SVT', 'PoolFormer', 'VAN', 'DenseNet', 'HorNet', 'EfficientFormer', 'SwinTransformerV2', 'MViT', 'MobileViT', 'DaViT', 'RepLKNet', 'BEiT', 'MixMIMTransformer', 'EfficientNetV2']
+__all__ = ['MobileNetV3','MobileNetV2', 'AlexNet', 'LeNet5', 'VGG', 'ResNet', 'ResNetV1c', 'ResNetV1d', 'ShuffleNetV1', 'ShuffleNetV2','EfficientNet', 'ResNeXt', 'SEResNet', 'SEResNeXt', 'RegNet', 'RepVGG', 'Res2Net', 'ConvNeXt', 'HRNet', 'ConvMixer','CSPDarkNet','CSPResNet','CSPResNeXt', 'SwinTransformer', 'VisionTransformer', 'TNT', 'MlpMixer', 'DistilledVisionTransformer', 'Conformer', 'T2T_ViT', 'PCPVT', 'SVT', 'PoolFormer', 'VAN', 'DenseNet', 'HorNet', 'EfficientFormer', 'SwinTransformerV2', 'MViT', 'MobileViT', 'DaViT', 'RepLKNet', 'BEiT', 'MixMIMTransformer', 'EfficientNetV2', 'TinyViT', 'DeiT3', 'EdgeNeXt', 'RevVisionTransformer']

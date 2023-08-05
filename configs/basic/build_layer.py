@@ -192,4 +192,5 @@ def build_padding_layer(cfg, *args, **kwargs):
 
 
 def build_dropout(cfg):
-    return eval(cfg.pop('type'))(**cfg)
+    cfg_ = cfg.copy()
+    return eval(cfg_.pop('type'))(**cfg_)

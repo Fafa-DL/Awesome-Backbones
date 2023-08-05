@@ -1,3 +1,4 @@
 .vscode/
+__pycache__/
 logs/
 datasets/
