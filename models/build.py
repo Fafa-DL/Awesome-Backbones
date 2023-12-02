@@ -120,22 +120,25 @@ class BuildNet(BaseModule):
         if stage == 'neck':
             return x
     
-    def forward(self, x,return_loss=True,**kwargs):
-        if return_loss:
-            return self.forward_train(x,**kwargs)
-        else:
-            return self.forward_test(x,**kwargs)
-
-    def forward_train(self,x,targets,**kwargs):
+    def forward(self, x, return_loss=True, train_statu=False, **kwargs):
         x = self.extract_feat(x)
         
+        if not train_statu:
+            if return_loss:
+                return self.forward_train(x, **kwargs)
+            else:
+                return self.forward_test(x, **kwargs)
+        else:
+            return self.forward_test(x), self.forward_train(x, **kwargs)
+        
+    def forward_train(self, x, targets, **kwargs):
+         
         losses = dict()
-        loss = self.head.forward_train(x,targets,**kwargs)
+        loss = self.head.forward_train(x, targets, **kwargs)
         losses.update(loss)
         return losses
         
-    def forward_test(self, x,**kwargs):
-        x = self.extract_feat(x)
+    def forward_test(self, x, **kwargs):
         
         out = self.head.simple_test(x,**kwargs)
         return out

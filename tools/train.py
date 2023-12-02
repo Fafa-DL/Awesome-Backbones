@@ -56,13 +56,13 @@ def parse_args():
 def main():
     # 读取配置文件获取关键字段
     args = parse_args()
-    model_cfg,train_pipeline,val_pipeline,data_cfg,lr_config,optimizer_cfg = file2dict(args.config)
+    model_cfg, train_pipeline, val_pipeline, data_cfg, lr_config, optimizer_cfg = file2dict(args.config)
     print_info(model_cfg)
 
     # 初始化
     meta = dict()
     dirname = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    save_dir = os.path.join('logs',model_cfg.get('backbone').get('type'),dirname)
+    save_dir = os.path.join('logs', model_cfg.get('backbone').get('type'), dirname)
     meta['save_dir'] = save_dir
     
     # 设置随机数种子
@@ -108,10 +108,10 @@ def main():
         model.freeze_layers(data_cfg.get('train').get('freeze_layers'))
     
     if device != torch.device('cpu'):
-        model = DataParallel(model,device_ids=[args.gpu_id])
+        model = DataParallel(model, device_ids=[args.gpu_id])
     
     # 初始化优化器
-    optimizer = eval('optim.' + optimizer_cfg.pop('type'))(params=model.parameters(),**optimizer_cfg)
+    optimizer = eval('optim.' + optimizer_cfg.pop('type'))(params=model.parameters(), **optimizer_cfg)
     
     # 初始化学习率更新策略
     lr_update_func = eval(lr_config.pop('type'))(**lr_config)
@@ -146,7 +146,7 @@ def main():
     
     # 是否从中断处恢复训练
     if args.resume_from:
-        model,runner,meta = resume_model(model,runner,args.resume_from,meta)
+        model, runner,meta = resume_model(model, runner, args.resume_from, meta)
     else:
         os.makedirs(save_dir)
         shutil.copyfile(args.config,os.path.join(save_dir,os.path.split(args.config)[1]))
@@ -161,8 +161,8 @@ def main():
     # 训练
     for epoch in range(runner.get('epoch'),runner.get('max_epochs')):
         lr_update_func.before_train_epoch(runner)
-        train(model,runner, lr_update_func, device, epoch, data_cfg.get('train').get('epoches'), meta)
-        validation(model,runner, data_cfg.get('test'), device, epoch, data_cfg.get('train').get('epoches'), meta)
+        train(model, runner, lr_update_func, device, epoch, data_cfg.get('train').get('epoches'), data_cfg.get('test'), meta)
+        validation(model, runner, data_cfg.get('test'), device, epoch, data_cfg.get('train').get('epoches'), meta)
         
         train_history.after_epoch(meta)
 

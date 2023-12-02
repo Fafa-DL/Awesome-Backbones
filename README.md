@@ -37,6 +37,13 @@ train_pipeline = [
 
 ## 更新日志
 
+**`2023.12.02`** 
+- 新增Issue中多人提及的输出**Train Acc**与**Val loss**
+    - `metrics_outputs.csv`保存每周期`train_loss, train_acc, train_precision, train_recall, train_f1-score, val_loss, val_acc, val_precision, val_recall, val_f1-score`方便各位绘图
+    - 终端由原先仅输出**Val**相关metrics升级为Train与Val都输出
+
+    ![](https://raw.githubusercontent.com/Fafa-DL/readme-data/main/backbones/terminal.jpg)
+
 **`2023.08.05`** 
 - 新增**TinyViT**(预训练权重不匹配)、**DeiT3**、**EdgeNeXt**、**RevVisionTransformer**
 

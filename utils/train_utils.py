@@ -197,25 +197,28 @@ def resume_model(model, runner, checkpoint, meta, resume_optimizer=True, map_loc
 '''
 训练
 '''
-def train(model, runner, lr_update_func, device, epoch, epoches, meta):
+def train(model, runner, lr_update_func, device, epoch, epoches, test_cfg, meta):
     train_loss = 0
+    pred_list, target_list = [], []
     runner['epoch'] = epoch + 1
     meta['epoch'] = runner['epoch']
     
     model.train()
-    with tqdm(total=len(runner.get('train_loader')),desc=f'Train: Epoch {epoch + 1}/{epoches}',postfix=dict,mininterval=0.3) as pbar:
+    with tqdm(total=len(runner.get('train_loader')),desc=f'Train: Epoch {epoch + 1}/{epoches}', postfix=dict, mininterval=0.3) as pbar:
         for iter, batch in enumerate(runner.get('train_loader')):            
             images, targets, _ = batch
             with torch.no_grad():
                 images  = images.to(device)
                 targets = targets.to(device)
-
+                target_list.append(targets)
+            
             runner.get('optimizer').zero_grad()
             lr_update_func.before_train_iter(runner)
-            losses = model(images,targets=targets,return_loss=True)
+            preds, losses = model(images, targets=targets, return_loss=True, train_statu=True)
             losses.get('loss').backward()
             runner.get('optimizer').step()
 
+            pred_list.append(preds)
             train_loss += losses.get('loss').item()
             pbar.set_postfix(**{'Loss': train_loss / (iter + 1), 
                                 'Lr' : get_lr(runner.get('optimizer'))
@@ -224,7 +227,10 @@ def train(model, runner, lr_update_func, device, epoch, epoches, meta):
             meta['iter'] = runner['iter']
             pbar.update(1)
     
+    eval_results = evaluate(torch.cat(pred_list), torch.cat(target_list), test_cfg.get('metrics'), test_cfg.get('metric_options'))
+    
     meta['train_info']['train_loss'].append(train_loss / (iter + 1))
+    meta['train_info']['train_acc'].append(eval_results)
             
     if train_loss/len(runner.get('train_loader')) < runner.get('best_train_loss') :
         runner['best_train_loss'] = train_loss/len(runner.get('train_loader'))
@@ -233,31 +239,45 @@ def train(model, runner, lr_update_func, device, epoch, epoches, meta):
             os.remove(runner['best_train_weight'])
         runner['best_train_weight'] = os.path.join(meta['save_dir'],'Train_Epoch{:03}-Loss{:.3f}.pth'.format(epoch+1,train_loss / len(runner.get('train_loader'))))
         meta['best_train_weight'] = runner['best_train_weight']
-        save_checkpoint(model,runner.get('best_train_weight'),runner.get('optimizer'),meta)
+        save_checkpoint(model,runner.get('best_train_weight'),runner.get('optimizer'), meta)
+    
+    TITLE = 'Train Results'
+    TABLE_DATA = (
+    ('Top-1 Acc', 'Top-5 Acc', 'Mean Precision', 'Mean Recall', 'Mean F1 Score'),
+    ('{:.2f}'.format(eval_results.get('accuracy_top-1',0.0)), '{:.2f}'.format(eval_results.get('accuracy_top-5',100.0)), '{:.2f}'.format(mean(eval_results.get('precision',0.0))),'{:.2f}'.format(mean(eval_results.get('recall',0.0))),'{:.2f}'.format(mean(eval_results.get('f1_score',0.0)))),
+    )
+    table_instance = AsciiTable(TABLE_DATA,TITLE)
+    #table_instance.justify_columns[2] = 'right'
+    print()
+    print(table_instance.table)
+    print()
     
 
 def validation(model, runner, cfg, device, epoch, epoches, meta):
-    preds,targets = [],[]
+    pred_list, target_list = [], []
+    val_loss = 0.0
     model.eval()
     with torch.no_grad():
-        with tqdm(total=len(runner.get('val_loader')), desc=f'Test : Epoch {epoch + 1}/{epoches}',mininterval=0.3) as pbar:
+        with tqdm(total=len(runner.get('val_loader')), desc=f'Test : Epoch {epoch + 1}/{epoches}', postfix=dict, mininterval=0.3) as pbar:
             for iter, batch in enumerate(runner.get('val_loader')):
-                images, target, _ = batch
-                outputs = model(images.to(device),return_loss=False)
-                preds.append(outputs)
-                targets.append(target.to(device))   
+                images, targets, _ = batch
+                preds, losses = model(images.to(device), targets = targets.to(device), return_loss=True, train_statu=True)
+                pred_list.append(preds)
+                target_list.append(targets.to(device))  
+                val_loss += losses.get('loss').item()
+                pbar.set_postfix(**{'Loss': val_loss / (iter + 1)})
                 pbar.update(1)
                 
-    eval_results = evaluate(torch.cat(preds),torch.cat(targets),cfg.get('metrics'),cfg.get('metric_options'))
+    eval_results = evaluate(torch.cat(pred_list),torch.cat(target_list),cfg.get('metrics'),cfg.get('metric_options'))
     
     meta['train_info']['val_acc'].append(eval_results)
+    meta['train_info']['val_loss'].append(val_loss / (iter + 1))
     
     TITLE = 'Validation Results'
     TABLE_DATA = (
     ('Top-1 Acc', 'Top-5 Acc', 'Mean Precision', 'Mean Recall', 'Mean F1 Score'),
     ('{:.2f}'.format(eval_results.get('accuracy_top-1',0.0)), '{:.2f}'.format(eval_results.get('accuracy_top-5',100.0)), '{:.2f}'.format(mean(eval_results.get('precision',0.0))),'{:.2f}'.format(mean(eval_results.get('recall',0.0))),'{:.2f}'.format(mean(eval_results.get('f1_score',0.0)))),
-    
-)
+    )
     table_instance = AsciiTable(TABLE_DATA,TITLE)
     #table_instance.justify_columns[2] = 'right'
     print()
