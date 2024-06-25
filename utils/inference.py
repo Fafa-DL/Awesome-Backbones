@@ -66,6 +66,36 @@ def inference_model(model, image, val_pipeline, classes_names,label_names):
     return result
 
 
+def inference_backbone(model, image, val_pipeline):
+    """Inference image(s) with the classifier.
+
+    Args:
+        model (nn.Module): The loaded classifier.
+        image (str/ndarray): The image filename or loaded image.
+        val_pipeline (dict): The image preprocess pipeline.
+
+    Returns:
+        backbone feature
+    """
+    if isinstance(image, str):
+        if val_pipeline[0]['type'] != 'LoadImageFromFile':
+            val_pipeline.insert(0, dict(type='LoadImageFromFile'))
+        data = dict(img_info=dict(filename=image), img_prefix=None)
+    else:
+        if val_pipeline[0]['type'] == 'LoadImageFromFile':
+            val_pipeline.pop(0)
+        data = dict(img=image, filename=None)
+
+    pipeline = Compose(val_pipeline)
+    image = pipeline(data)['img'].unsqueeze(0)
+    device = next(model.parameters()).device  # model device
+
+    # forward the model
+    with torch.no_grad():
+        scores = model(image.to(device))
+        return scores
+
+
 def show_result(img,
                 result,
                 text_color='white',
