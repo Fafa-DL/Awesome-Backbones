@@ -226,7 +226,7 @@ def main():
     """
     制作测试集并喂入Dataloader
     """
-    val_pipeline = copy.deepcopy(train_pipeline)
+    val_pipeline = copy.deepcopy(val_pipeline)
     test_dataset = Mydataset(test_datas, val_pipeline)
     test_loader = DataLoader(test_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True, collate_fn=collate)
     
