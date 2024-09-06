@@ -4,6 +4,7 @@ sys.path.insert(0,os.getcwd())
 import argparse
 
 import copy
+import random
 import numpy as np
 from sklearn.metrics import roc_curve, auc, precision_recall_curve, average_precision_score, precision_score
 import matplotlib.pyplot as plt
@@ -19,10 +20,11 @@ import time
 import csv
 
 from utils.dataloader import Mydataset, collate
-from utils.train_utils import get_info, file2dict
+from utils.train_utils import get_info, file2dict, set_random_seed
 from models.build import BuildNet
 from core.evaluations import evaluate
 from utils.inference import init_model
+
 
 def get_metrics_output(eval_results, metrics_output,classes_names, indexs, APs):
     f = open(metrics_output,'a', newline='')
@@ -209,7 +211,12 @@ def main():
     classes_names, indexs = get_info(classes_map)
     with open(test_annotations, encoding='utf-8') as f:
         test_datas   = f.readlines()
-        
+    
+    """
+    设置各种随机种子确保结果可复现
+    """
+    set_random_seed(33, False)
+    
     """
     生成模型、加载权重
     """
@@ -227,6 +234,10 @@ def main():
     制作测试集并喂入Dataloader
     """
     val_pipeline = copy.deepcopy(val_pipeline)
+    # 由于val_pipeline是用于推理，此处用做评估还需处理label
+    val_pipeline = [data for data in val_pipeline if data['type'] != 'Collect']
+    val_pipeline.extend([dict(type='ToTensor', keys=['gt_label']), dict(type='Collect', keys=['img', 'gt_label'])])
+    
     test_dataset = Mydataset(test_datas, val_pipeline)
     test_loader = DataLoader(test_dataset, shuffle=True, batch_size=data_cfg.get('batch_size'), num_workers=data_cfg.get('num_workers'), pin_memory=True, collate_fn=collate)
     
