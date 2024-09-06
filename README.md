@@ -37,6 +37,9 @@ train_pipeline = [
 
 ## 更新日志
 
+**`2024.09.06`** 
+- 修复高频反馈的**评估时结果浮动大**的问题
+
 **`2023.12.02`** 
 - 新增Issue中多人提及的输出**Train Acc**与**Val loss**
     - `metrics_outputs.csv`保存每周期`train_loss, train_acc, train_precision, train_recall, train_f1-score, val_loss, val_acc, val_precision, val_recall, val_f1-score`方便各位绘图
@@ -52,9 +55,6 @@ train_pipeline = [
 
 **`2022.11.20`** 
 - 新增是否将测试集用作验证集选项，若不使用，从训练集按ratio划分验证集数量，随机从训练集某fold挑选作为验证集（类似k-fold但不是，可自己稍改达到k-fold目的），详见[Training tutorial](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
-
-**`2022.11.06`** 
-- 新增**HorNet**, **EfficientFormer**, **SwinTransformer V2**, **MViT**模型
 
 
 ## 测试环境
