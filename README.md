@@ -37,6 +37,10 @@ train_pipeline = [
 
 ## 更新日志
 
+**`2025.01.17`** 
+- 支持转ONNX[#136](https://github.com/Fafa-DL/Awesome-Backbones/pull/136) @PurpleSky-NS
+- 类别激活图相关脚本[#114](https://github.com/Fafa-DL/Awesome-Backbones/pull/114) @jackyjinjing
+
 **`2024.09.06`** 
 - 修复高频反馈的**评估时结果浮动大**的问题
 
@@ -52,9 +56,6 @@ train_pipeline = [
 
 **`2023.03.07`** 
 - 新增**MobileViT**、**DaViT**、**RepLKNet**、**BEiT**、**EVA**、**MixMIM**、**EfficientNetV2**
-
-**`2022.11.20`** 
-- 新增是否将测试集用作验证集选项，若不使用，从训练集按ratio划分验证集数量，随机从训练集某fold挑选作为验证集（类似k-fold但不是，可自己稍改达到k-fold目的），详见[Training tutorial](https://github.com/Fafa-DL/Awesome-Backbones/blob/main/datas/docs/How_to_train.md)
 
 
 ## 测试环境
